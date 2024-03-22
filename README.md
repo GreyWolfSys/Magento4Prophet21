@@ -1,1 +1,1 @@
-# Magento4Prophet21
+# Magento for Prophet21
