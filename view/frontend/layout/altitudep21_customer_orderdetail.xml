@@ -1,0 +1,29 @@
+<page layout="2columns-left" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+
+    <update handle="customer_account"/>
+    <body>
+        <referenceContainer name="page.messages">
+            <block class="Magento\Framework\View\Element\Template" name="ajax.message.placeholder" template="Magento_Theme::html/messages.phtml"/>
+            <block class="Magento\Framework\View\Element\Messages" name="messages" as="messages" template="Magento_Theme::messages.phtml"/>
+        </referenceContainer>
+        <referenceBlock name="p21order-customer-orders">
+            <arguments>
+                <argument name="current" xsi:type="boolean">true</argument>
+            </arguments>
+        </referenceBlock>
+        <referenceBlock name="p21order-customer-orders">
+            <arguments>
+                <argument name="current" xsi:type="boolean">true</argument>
+            </arguments>
+        </referenceBlock>
+        <referenceBlock name="page.main.title">
+            <action method="setPageTitle">
+                <argument translate="true" name="title" xsi:type="string">Orders</argument>
+            </action>
+        </referenceBlock>
+        <referenceContainer name="content">
+            <block class="Altitude\P21\Block\Order\Detail" name="p21_order_detail" template="Altitude_P21::order/detail.phtml" cacheable="false">
+            </block>
+        </referenceContainer>
+    </body>
+</page>

@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../vendor/magento/framework/ObjectManager/etc/config.xsd">
+    <type name="Magento\Checkout\Model\ShippingInformationManagement">
+        <plugin name="gws_save_authorized_amount_in_quote" type="Altitude\P21\Plugin\Checkout\ShippingInformationManagement" sortOrder="1"/>
+        <plugin name="gws_save_authorized_amount_in_quote" type="Altitude\P21\Plugin\Checkout\ShippingInformationManagementShip" sortOrder="2"/>
+    </type>
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="fetchPrice" xsi:type="object">Altitude\P21\Console\FetchPrice</item>
+                <item name="updatePackageShipping" xsi:type="object">Altitude\P21\Console\UpdatePackageShipping</item>
+            </argument>
+        </arguments>
+    </type>
+    <preference for="Magento\Checkout\Block\Onepage\Success" type="Altitude\P21\Block\Success"/>
+    <preference for="Magento\Sales\Controller\Adminhtml\Order\View" type="Altitude\P21\Controller\Adminhtml\Order\View"/>
+    <preference for="Magento\Ups\Model\Carrier" type="Altitude\P21\Model\Carrier\Ups" />
+    <preference for="Magento\Usps\Model\Carrier" type="Altitude\P21\Model\Carrier\Usps" />
+    <preference for="Magento\Fedex\Model\Carrier" type="Altitude\P21\Model\Carrier\Fedex" />
+    <preference for="Magento\Dhl\Model\Carrier" type="Altitude\P21\Model\Carrier\Dhl" />
+    <preference for="Magento\CatalogSearch\Controller\Result\Index" type="Altitude\P21\Controller\Result\Index" />
+</config>

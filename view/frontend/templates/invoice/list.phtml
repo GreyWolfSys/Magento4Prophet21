@@ -1,0 +1,144 @@
+<?php
+    $data = $this->getInvoices();
+    $invstartdate = $data['invstartdate'];
+    $invenddate = $data['invenddate'];
+    $invoicesList = $data['invoicesList'];
+    $apiurl=$data['apiurl'];
+    $total = 0;
+    $paidtotal = 0;
+    
+    $processor = $data['processor'];
+   //  var_dump ($invoicesList) ;
+   
+     //return;
+     if (isset($invoicesList["SalesCustomerInvoiceListResponseContainerItems"])){
+          $arr=$invoicesList["SalesCustomerInvoiceListResponseContainerItems"];
+     } else {
+         $arr=array($invoicesList);
+     }
+     
+    if (isset($_REQUEST["sortfield"])){
+        // if (1==1){
+       
+        $arr=$this->array_sort_by_column($arr,$_REQUEST["sortfield"],$_REQUEST["sortorder"]);
+       
+    }
+     //var_dump($invoicesList["SalesCustomerInvoiceListResponseContainerItems"]);
+    $sortorder="";
+    //echo $_REQUEST["sortorder"] . "<br>";
+    if (!isset($_REQUEST["sortorder"])){
+        $sortorder="asc";
+    }elseif ($_REQUEST["sortorder"]=="asc"){
+        $sortorder="desc";
+    } else {
+        $sortorder="asc";
+    }
+    $sorturl=$block->getUrl('*/*/invoice');
+
+   // var_dump($invoicesList);
+?>
+<form method="get">
+<table class="gwinvoicetable data table" border="0">
+    <tbody>
+        <tr>
+            <td style="font-weight:bold;font-size: 18px;vertical-align: middle;text-align: center;" colspan="2">Start Date:</td>
+            <td style="vertical-align: middle;"><input type="text" id="startdate" name="startdate" value="<?php echo $invstartdate ?>"></td>
+            <td style="font-weight:bold;font-size: 18px;vertical-align: middle;text-align: center;" colspan="3">End Date: <input type="text" id="enddate" name="enddate" style="width: auto; margin-left: 20px;" value="<?php echo $invenddate ?>"></td>
+            <td style="font-weight:bold;font-size: 18px;vertical-align: middle;text-align: center;" colspan="1">
+            <input type="hidden" name="ordertype" value="invoice">
+            <button type="submit" class="button action primary">Submit</button></td>
+        </tr>
+    </tbody>
+</table>
+</form>
+<form method="post" action="<?php echo $block->getUrl("*/*/payinvoice") ?>">
+    <table class="gwinvoicetable data table" border="0">
+        <thead>
+            <tr>
+                <th></th>
+                <th><a href="<?php echo $sorturl ?>?sortfield=invoice_no&sortorder=<?php echo $sortorder ?>">Invoice Number</a></th>
+                <th><a href="<?php echo $sorturl ?>?sortfield=invoice_date&sortorder=<?php echo $sortorder ?>">Date</a></th>
+                <?php
+                 if (strpos($apiurl,'p21cloud') ===false  ){ ?>
+                <th><a href="<?php echo $sorturl ?>?sortfield=terms_desc&sortorder=<?php echo $sortorder ?>">Terms</a></th>
+                <th><a href="<?php echo $sorturl ?>?sortfield=terms_due_date&sortorder=<?php echo $sortorder ?>">Due Date</a></th> 
+                <?php } ?>
+                <th style="text-align:right;width: 10px;"><a href="<?php echo $sorturl ?>?sortfield=total_amount&sortorder=<?php echo $sortorder ?>">Total Amount</a></th><th  style="text-align:right;width: 10px;"/>
+                <th style="text-align:right;width: 10px;"><a href="<?php echo $sorturl ?>?sortfield=amount_paid&sortorder=<?php echo $sortorder ?>">Payment Amount</a></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (isset($arr[0]['ErrorDescription']) && $arr[0]['ErrorDescription'] != ""): ?>
+                <tr><td colspan="9"><?php echo $arr[0]["ErrorDescription"] ?></td></tr>
+            <?php elseif (isset($arr)): ?>
+                <?php foreach ($arr as $invoice): ?>
+                    <?php
+                        if ((!isset($invoice["invoice_date"]) || !isset($invoice["invoice_no"])) && (!isset($invoice["InvoiceDate"]) || !isset($invoice["InvoiceNumber"])) ) {
+                            continue;
+                        }
+                    ?>
+                   
+                    <tr class="invoiceheader">
+                        <td>
+                            <?php if (!empty($processor) && $processor <> "none"): ?>
+                                <input type="checkbox" name="payinvoice[]" value="<?php echo (isset($invoice["invoice_no"]) ? $invoice["invoice_no"] : $invoice["InvoiceNumber"]) ?>" /><input type="hidden" name="invoiceamount[<?php echo (isset($invoice["invoice_no"]) ? $invoice["invoice_no"] : $invoice["InvoiceNumber"])  ?>]" value="<?php echo (isset($invoice["total_amount"]) ? $invoice["total_amount"] : $invoice["InvoiceValue"]) ?>" />
+                            <?php endif; ?>
+                        </td>
+                    <?php if (!empty(isset($invoice["order_no"]) ? $invoice["order_no"] : $invoice["OrderNumber"])): ?>
+                        <td><a href="<?php echo $block->getUrl('altitudep21/customer/invoicedetail') . "?invoice=" . (isset($invoice["invoice_no"]) ? $invoice["invoice_no"] : $invoice["InvoiceNumber"]). "&order=" . (isset($invoice["order_no"]) ? $invoice["order_no"] : $invoice["OrderNumber"])?>" alt="View Order" title="View Order"><?php echo (isset($invoice["invoice_no"]) ? $invoice["invoice_no"] : $invoice["InvoiceNumber"])?></a></td>
+                    <?php else: ?>
+                        <td><?php echo (isset($invoice["invoice_no"]) ? $invoice["invoice_no"] : $invoice["InvoiceNumber"]) ?></td>
+                    <?php endif; ?>
+                        <td><?php echo (isset($invoice["invoice_date"]) ? $invoice["invoice_date"] : $invoice["InvoiceDate"])?></td>
+                        <?php if (strpos($apiurl,'p21cloud') ===false  ){ ?>
+                        <td><?php echo (isset($invoice["terms_desc"]) ? $invoice["terms_desc"] : "&nbsp;") ?></td>
+                        <td><?php echo (isset($invoice["terms_due_date"]) ? $invoice["terms_due_date"] : "&nbsp;") ?></td>
+                         <?php } ?>
+                        <td align="right"><?php echo $block->formatMoney( (floatval((isset($invoice["total_amount"]) ? $invoice["total_amount"] : $invoice["InvoiceValue"])))) ?></td> <td />
+                        <td align="right"><?php echo $block->formatMoney( (floatval((isset($invoice["amount_paid"]) ? $invoice["amount_paid"] : $invoice["TermsAmount"])))) ?></td>
+
+                        <?php
+                            $total +=(isset($invoice["total_amount"]) ? $invoice["total_amount"] : $invoice["InvoiceValue"]);
+                            $paidtotal += (isset($invoice["amount_paid"]) ? $invoice["amount_paid"] : $invoice["TermsAmount"]);
+                        ?>
+                    </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <?php $invoice = $invoicesList; ?>
+                <tr class="invoiceheader">
+                    <?php if (!empty($processor) && $processor <> "none"): ?>
+                        <input type="checkbox" name="payinvoice[]" value="<?php echo (isset($invoice["invoice_no"]) ? $invoice["invoice_no"] : $invoice["InvoiceNumber"]) ?>" /><input type="hidden" name="invoiceamount[<?php echo (isset($invoice["invoice_no"]) ? $invoice["invoice_no"] : $invoice["InvoiceNumber"])  ?>]" value="<?php echo (isset($invoice["total_amount"]) ? $invoice["total_amount"] : $invoice["InvoiceValue"]) ?>" />
+                    <?php endif; ?>
+                        <?php if (!empty(isset($invoice["order_no"]) ? $invoice["order_no"] : $invoice["OrderNumber"])): ?>
+                        <td><a href="<?php echo $block->getUrl('altitudep21/customer/invoicedetail') . "?invoice=" . (isset($invoice["invoice_no"]) ? $invoice["invoice_no"] : $invoice["InvoiceNumber"]) . "&order=" . (isset($invoice["order_no"]) ? $invoice["order_no"] : $invoice["OrderNumber"]) ?>" alt="View Order" title="View Order"><?php echo (isset($invoice["invoice_no"]) ? $invoice["invoice_no"] : $invoice["InvoiceNumber"]) ?></a></td>
+                    <?php else: ?>
+                        <td><?php echo (isset($invoice["invoice_no"]) ? $invoice["invoice_no"] : $invoice["InvoiceNumber"]) ?></td>
+                    <?php endif; ?>
+                    <td><?php echo (isset($invoice["invoice_date"]) ? $invoice["invoice_date"] : $invoice["InvoiceDate"]) ?></td>
+                    <?php if (strpos($apiurl,'p21cloud') ===false  ){ ?>
+                    <td><?php echo (isset($invoice["terms_desc"]) ? $invoice["terms_desc"] : "") ?></td>
+                    <td><?php echo (isset($invoice["terms_due_date"]) ? $invoice["terms_due_date"] : "") ?></td>
+                       <?php } ?>
+                    <td align="right"><?php echo $block->formatMoney( (floatval((isset($invoice["total_amount"]) ? $invoice["total_amount"] : $invoice["InvoiceValue"])))) ?></td> <td />
+                    <td align="right"><?php echo $block->formatMoney( (floatval((isset($invoice["amount_paid"]) ? $invoice["amount_paid"] : $invoice["TermsAmount"])))) ?></td>
+
+                    <?php
+                        $total += (isset($invoice["total_amount"]) ? $invoice["total_amount"] : $invoice["InvoiceValue"]);
+                        $paidtotal += (isset($invoice["amount_paid"]) ? $invoice["amount_paid"] : $invoice["TermsAmount"]);
+                    ?>
+                </tr>
+            <?php endif; ?>
+        </tbody>
+        <tfoot>
+          <?php if (!empty($processor) && $processor <> "none"): ?>
+            <tr>
+                <td><button class="action primary" title="Pay" value="Pay" type="submit">Pay</button></td>
+                <td style="text-align:right;" a colspan="2" align=right><strong>Invoice&nbsp;Total:</td>
+                <td style="text-align:right;" a align="right"><?php echo $block->formatMoney( (floatval($total))) ?></td>
+                <td style="text-align:right;" align="right"><strong>Paid&nbsp;Total:</strong></td>
+                <td style="text-align:right;" a align="right"><?php echo $block->formatMoney( (floatval($paidtotal))) ?></td>
+            </tr>
+             <?php endif; ?>
+        </tfoot>
+    </table>
+</form>

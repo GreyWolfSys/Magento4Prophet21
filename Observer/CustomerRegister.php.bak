@@ -1,0 +1,120 @@
+<?php
+
+namespace Altitude\P21Customers\Observer;
+
+use Magento\Customer\Api\CustomerRepositoryInterface;
+use Magento\Framework\Event\ObserverInterface;
+
+class CustomerRegister implements ObserverInterface
+{
+    /** @var CustomerRepositoryInterface */
+    protected $customerRepository;
+
+    protected $p21;
+
+    /**
+     * @param CustomerRepositoryInterface $customerRepository
+     */
+    public function __construct(
+        CustomerRepositoryInterface $customerRepository,
+        \Altitude\Core\Model\P21 $p21
+
+    ) {
+        $this->customerRepository = $customerRepository;
+        $this->p21 = $p21;
+    }
+
+    public function execute(\Magento\Framework\Event\Observer $observer)
+    {
+        $configs = $this->p21->getConfigValue(['cono', 'slsrepin', 'slsrepout', 'whse', 'defaultterms', 'shipviaty']);
+        extract($configs);
+
+        $this->p21->gwLog("Customer registered");
+        $customer = $observer->getEvent()->getCustomer();
+
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $customerSession = $objectManager->get('Magento\Framework\App\Http\Context');
+
+        //	var_dump($address);
+        $statecd = "";
+        $name = $customer->getFirstname() . " " . $customer->getLastname();
+        $termstype = $defaultterms;
+        $taxablety = "";
+
+        //not so required fields
+        $custno = "0";
+
+        $addr1 = "";//"$address['street']";
+        $addr2 = "";
+        $addr3 = "";
+        $city = "";//$address['city'];
+        $state = "";
+        $zipcd = "";
+        $phoneno = "";
+        $faxphoneno = "";
+        $countrycd = "";
+        $countycd = "";
+        $email = "";
+
+        $custtype = "";
+        $salester = "";
+        $pricetype = "";
+
+        $pricecd = "1";
+        $minord = "0";
+        $maxord = "0";
+        $siccd = "0";
+        $bofl = "Y";
+        $subfl = "Y";
+        $shipreqfl = "N";
+        $transproc = "arscr";
+        //safe to ignore these fields
+        $nontaxtype = "";
+        $taxcert = "";
+        $creditmgr = "";
+        $taxauth = "";
+        $dunsno = "";
+        $user1 = "";
+        $user2 = "";
+        $user3 = "";
+        $user4 = "";
+        $user5 = "";
+        $user6 = "0";
+        $user7 = "0";
+        $user8 = "";
+        $user9 = "";
+        $addon1 = "0";
+        $addon2 = "0";
+        $addon3 = "0";
+        $addon4 = "0";
+        $addon5 = "0";
+        $addon6 = "0";
+        $addon7 = "0";
+        $addon8 = "0";
+        $custpo = "";
+        $inbndfrtfl = "";
+        $outbndfrtfl = "";
+
+        try {
+            $GCCustomer = $this->p21->SalesCustomerInsert($company_id, $customer_id, $customer_name, $mail_address1, $mail_address2, $mail_city, $mail_state, $zipcd, $central_phone_number, $central_fax_number, $last_maintained_by, $terms, $customer_type_cd, $po_no_required, $currency_id, $invoice_batch_uid, $statement_batch_uid, $salesrep_id, $taxable_flag, $email_address, $allow_line_item_freight_flag, $delete_flag, $source_price_cd);
+            //	$this->p21->gwLog("postcust");
+
+            if (isset($GCCustomer)) {
+                $custno = $GCCustomer["customer_id"];
+                $this->p21->gwLog("New custno: " . $custno);
+                $customer->setCustomAttribute("P21_CustNo", $custno);
+
+                $this->customerRepository->save($customer);
+
+                $customer2 = $this->customerRepository->getById($customer->getId());
+                $customer2->setCustomAttribute('p21_custno', $custno);
+                $this->customerRepository->save($customer2);
+                //  }
+
+            //	}
+            }
+        } catch (\Exception $e) {
+            $this->p21->gwLog($e->getMessage());
+        }
+    }
+}

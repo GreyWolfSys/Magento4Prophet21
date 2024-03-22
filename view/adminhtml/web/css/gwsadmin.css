@@ -1,0 +1,5 @@
+#menu-altitude-p21-greywolfsystemsmenu>a:before {
+    content: url(Altitude---Magento.png)!important;
+    transform: scale(0.7);
+    margin-bottom: 2.0rem;
+}

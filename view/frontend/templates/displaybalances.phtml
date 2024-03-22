@@ -1,0 +1,29 @@
+<?php extract($block->getBalances()); ?>
+<div class="customer-balance">
+	<div>
+		<span class='gwslabel'><strong>Name: </strong></span>
+		<span class='gwsvalue'><?php echo isset($p21Customer["customer_name"]) ? $p21Customer["customer_name"] : $p21Customer["CustomerName"] ?></span>
+	</div>
+	<div>
+		<span class='gwslabel'><strong>Credit Limit: </strong></span>
+		<span class='gwsvalue'><?php echo $block->formatMoney((floatval( isset($p21Customer["credit_limit"] ) ? $p21Customer["credit_limit"] : $p21Customer["CreditLimit"] ))) ?></span>
+	</div>
+	<div>
+		<span class='gwslabel'><strong>Credit Limit Used: </strong></span>
+		<span class='gwsvalue'><?php echo $block->formatMoney((floatval( isset($p21Customer["credit_limit_used"]) ? $p21Customer["credit_limit_used"] : $p21Customer["CreditLimitUsed"] ))) ?></span>
+	</div>
+	<?php if (isset($p21Customer["last_check_number"])) {  ?>
+    	<div>
+    		<span class='gwslabel'><strong>Last Check Number: </strong></span>
+    		<span class='gwsvalue'><?php echo isset($p21Customer["last_check_number"]) ? $p21Customer["last_check_number"] : "" ?></span>
+    	</div>
+    	<div>
+    		<span class='gwslabel'><strong>Last Check Amount: </strong></span>
+    		<span class='gwsvalue'><?php echo $block->formatMoney((floatval(isset($p21Customer["last_check_amount"]) ? $p21Customer["last_check_amount"] : 0 ))) ?></span>
+    	</div>
+    <?php }	?>
+	<div>
+		<span class='gwslabel'><strong>Statement Balance: </strong></span>
+		<span class='gwsvalue'><?php echo $block->formatMoney((floatval(isset($p21Customer["total_balance"]) ? $p21Customer["total_balance"] : $p21Customer["StatementBalance"] ))) ?></span>
+	</div>
+</div>

@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="checkout.cart.totals">
+            <arguments>
+                <argument name="jsLayout" xsi:type="array">
+                    <item name="components" xsi:type="array">
+                        <item name="block-totals" xsi:type="array">
+                            <item name="children" xsi:type="array">
+                                <item name="authorized_amount" xsi:type="array">
+                                    <item name="component" xsi:type="string">Altitude_P21/js/view/checkout/cart/totals/authorized_amount</item>
+                                    <item name="sortOrder" xsi:type="string">20</item>
+                                    <item name="config" xsi:type="array">
+                                        <item name="template" xsi:type="string">Altitude_P21/checkout/cart/totals/authorized_amount</item>
+                                        <item name="title" xsi:type="string">Authorized Amount</item>
+                                    </item>
+                                </item>
+                                <item name="grand-total" xsi:type="array">
+                                    <item name="component" xsi:type="string">Altitude_P21/js/view/checkout/cart/totals/grand-total</item>
+                                    <item name="config" xsi:type="array">
+                                        <item name="template" xsi:type="string">Altitude_P21/checkout/cart/totals/grand-total</item>
+                                        <item name="exclTaxLabel" xsi:type="string" translate="true">Order Total Excl. Tax</item>
+                                        <item name="inclTaxLabel" xsi:type="string" translate="true">Order Total Incl. Tax</item>
+                                        <item name="title" xsi:type="string" translate="true">Order Total</item>
+                                    </item>
+                                </item>
+                                <item name="upcharge_total" xsi:type="array">
+                                    <item name="component" xsi:type="string">Altitude_P21/js/view/checkout/cart/totals/upcharge_total</item>
+                                     <item name="sortOrder" xsi:type="string">20</item>
+                                     <item name="config" xsi:type="array">
+                                        <item name="template" xsi:type="string">Altitude_P21/checkout/cart/totals/upcharge_total</item>
+                                        <item name="title" xsi:type="string">Credit Card Fee</item>
+                                    </item>
+                                </item>
+                                
+                            </item>
+                        </item>
+                    </item>
+                </argument>
+            </arguments>
+        </referenceBlock>
+    </body>
+</page>

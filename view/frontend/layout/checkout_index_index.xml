@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="content">
+            <block class="Magento\Framework\View\Element\Template" name="checkout.customershipping.additional" before="ship-to" template="Altitude_P21::checkout/additional.phtml" />
+            <block class="Magento\Framework\View\Element\Template" name="checkout.disableaddress.js" before="-" template="Altitude_P21::checkout/js.phtml" />
+        </referenceContainer>
+        <referenceBlock name="checkout.root">
+            <arguments>
+                <argument name="jsLayout" xsi:type="array">
+                    <item name="components" xsi:type="array">
+                        <item name="checkout" xsi:type="array">
+                            <item name="children" xsi:type="array">
+                                <item name="steps" xsi:type="array">
+                                    <item name="children" xsi:type="array">
+                                        <item name="billing-step" xsi:type="array">
+                                            <item name="children" xsi:type="array">
+                                                <item name="payment" xsi:type="array">
+                                                    <item name="children" xsi:type="array">
+                                                        <item name="payments-list" xsi:type="array">
+                                                            <item name="children" xsi:type="array">
+                                                                <item name="before-place-order" xsi:type="array">
+                                                                    <item name="children" xsi:type="array">
+                                                                        <item name="order-comment" xsi:type="array">
+                                                                            <item name="component" xsi:type="string">Altitude_P21/js/view/payment-message</item>
+                                                                            <item name="displayArea" xsi:type="string">before-place-order</item>
+                                                                            <item name="dataScope" xsi:type="string">paymentmessage</item>
+                                                                            <item name="provider" xsi:type="string">checkoutProvider</item>
+                                                                        </item>
+                                                                    </item>
+                                                                </item>
+                                                            </item>
+                                                        </item>
+                                                        <item name="totals" xsi:type="array">
+                                                     <item name="children" xsi:type="array">
+                                                        <item name="upcharge_total" xsi:type="array">
+                                                            <item name="component"  xsi:type="string">Altitude_P21/js/view/checkout/cart/totals/upcharge_total</item>
+                                                             <item name="sortOrder" xsi:type="string">30</item>
+                                                             <item name="config" xsi:type="array">
+                                                                <item name="template" xsi:type="string">Altitude_P21/checkout/cart/totals/upcharge_total</item>
+                                                                <item name="title" xsi:type="string">Credit Card Fee</item>
+                                                            </item>
+                                                         </item>
+                                                     </item>
+                                                 </item>
+                                                 <item name="cart_items" xsi:type="array">
+                                                     <item name="children" xsi:type="array">
+                                                         <item name="details" xsi:type="array">
+                                                             <item name="children" xsi:type="array">
+                                                                 <item name="subtotal" xsi:type="array">
+                                                                    <item name="component" xsi:type="string">Magento_Tax/js/view/checkout/summary/item/details/subtotal</item>
+                                                                 </item>
+                                                             </item>
+                                                         </item>
+                                                     </item>
+                                                 </item>
+                                                    </item>
+                                                </item>
+                                            </item>
+                                        </item>
+                                    </item>
+                                </item>
+                                <item name="sidebar" xsi:type="array">
+                                    <item name="children" xsi:type="array">
+                                        <item name="summary" xsi:type="array">
+                                            <item name="children" xsi:type="array">
+                                                <item name="totals" xsi:type="array">
+                                                    <item name="children" xsi:type="array">
+                                                        <item name="authorized_amount" xsi:type="array">
+                                                            <item name="component"  xsi:type="string">Altitude_P21/js/view/checkout/cart/totals/authorized_amount</item>
+                                                            <item name="sortOrder" xsi:type="string">20</item>
+                                                            <item name="config" xsi:type="array">
+                                                                <item name="template" xsi:type="string">Altitude_P21/checkout/cart/totals/authorized_amount</item>
+                                                                <item name="title" xsi:type="string">Authorized Amount</item>
+                                                            </item>
+                                                        </item>
+                                                    </item>
+                                                </item>
+                                                <item name="cart_items" xsi:type="array">
+                                                    <item name="children" xsi:type="array">
+                                                        <item name="details" xsi:type="array">
+                                                            <item name="children" xsi:type="array">
+                                                                <item name="subtotal" xsi:type="array">
+                                                                    <item name="component" xsi:type="string">Magento_Tax/js/view/checkout/summary/item/details/subtotal</item>
+                                                                </item>
+                                                            </item>
+                                                        </item>
+                                                    </item>
+                                                </item>
+                                            </item>
+                                        </item>
+                                    </item>
+                                </item>
+                            </item>
+                        </item>
+                    </item>
+                </argument>
+            </arguments>
+        </referenceBlock>
+    </body>
+</page>

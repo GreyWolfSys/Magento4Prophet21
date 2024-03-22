@@ -1,0 +1,343 @@
+﻿<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="greywolfsystems" translate="label" sortOrder="10">
+            <label>Altitude</label>
+        </tab>
+        <section id="connectivity" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Connectivity</label>
+            <tab>greywolfsystems</tab>
+            <resource>Altitude_P21::config</resource>
+            <group id="webservices" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Web Services</label>
+                <field id="apikey" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>API Key</label>
+                    <comment>This is the Web Service Key set up in My Account.</comment>
+                </field>
+
+                <field id="apiurl" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Web Services URL</label>
+                    <comment>Web Services URL</comment>
+                 </field>
+            </group>
+        </section>
+
+        <section id="defaults" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Defaults</label>
+            <tab>greywolfsystems</tab>
+            <resource>Altitude_P21::config</resource>
+            <group id="gwcustomer" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Customer</label>
+                <field id="cono" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Company Number</label>
+                    <comment>This the the company number from P21.</comment>
+                </field>
+                <field id="erpcustomerid" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Customer Number</label>
+                    <comment>This is the default customer number used for things that aren't specific to a customer. Pricing for users who aren't logged in, orders for customers who aren't in P21(if settings allow that), etc.</comment>
+                </field>
+                <field id="whse" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Warehouse</label>
+                    <comment>Warehouse/Location ID. This is the default, similar to the customer number. It's used for pricing and for the main inventory availability number. Can be overridden by customer on the customer screen.</comment>
+                </field>
+                <field id="shipviaty" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Ship Via</label>
+                    <comment>This is the ship via that is used by default if another shipvia isn't configured on the customer, or with the other Magento shipping methods. Also used as the shipto freight code.</comment>
+                </field>
+                <field id="shipto2erp" translate="label" type="select" sortOrder="5" showInDefault="0" showInWebsite="0" showInStore="0">
+                    <label>Import New ShipTo Into P21</label>
+                     <comment>When a shipto is created or updated in Altitude, it will be passed to P21 as a new or updated shipto.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="multip21orders" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Allow Multiple P21 Orders per Altitude Order?</label>
+                    <comment>This will split the Magento order into multiple orders based on warehouse availability.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="shipping_per_wh" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Calculate Shipping Cost from Each Warehouse?</label>
+                    <comment>Gets shipping rates from each warehouse using the configured shipping methods.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="shipping_notice" translate="label" type="textarea" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Shipping Notice</label>
+                    <comment></comment>
+                </field>
+                <field id="disable_address_import" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Disable Import Address From P21?</label>
+                    <comment>If NO, will import shiptos from P21 when a customer logs in.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="address_to_erp" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Send Customer Address to P21?</label>
+                    <comment>If YES, will update P21 shiptos when a customer creates or edits a shipto in Magento.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="allow_edit_address" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Allow Customer to Edit Address?</label>
+                     <comment>This disables the ability for a customer to edit their address, from either My Account or during checkout. They are required to use existing addresses in the address book. If this is selected, address import should be turned on.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="display" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Display</label>
+                <field id="invstartdate" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Invoice Inquiry Start Date</label>
+                    <comment>Starting date for invoice/order/quote display.</comment>
+                </field>
+            </group>
+            <group id="shoppingcart" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Shopping Cart</label>
+                <field id="defaultterms" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Terms</label>
+                    <comment>The are the terms that are use in an order if the Magento payment method isn't configured for P21.</comment>
+                </field>
+                <field id="credit_status" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Credit Status</label>
+                    <comment>This is the default credit status used for new customers.</comment>
+                </field>
+                <field id="price_library" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Price Library</label>
+                    <comment>This is the price library assigned to new customers in addition to the P21 customer default price library, if available.</comment>
+                </field>
+                <field id="slsrepin" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Sales Rep</label>
+                    <comment>The P21 salesperson that will get credit for the sale.</comment>
+                </field>
+                 <field id="taker" translate="label" type="text" sortOrder="7" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Taker</label>
+                    <comment>The P21 taker.</comment>
+                </field>
+                <field id="holdifover" translate="label" type="text" sortOrder="8" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Hold If Over Dollar Amount</label>
+                    <comment>Numeric. Place order on hold if over this value.</comment>
+                </field>
+                <field id="emptyallnoninvoice" translate="label" type="select" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Clear All of The Non-Invoices Before Add Invoice To Cart?</label>
+                    <comment>When selected, the cart will be emptied when an invoice is selected to be paid. This allows customers to easily pay just the invoice.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="autoinvoice" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Automatically Create Invoices</label>
+                   <comment>If this is set to yes, the order will automatically be converted to an invoice in Magento.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="sendtoerpinv" translate="label" type="select" sortOrder="11" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Send Order To P21 On Invoice</label>
+                    <comment>If yes, will only send the order to P21 when the Magento order is invoiced. If no, will send the order immediately.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="payment_message" translate="label" type="text" sortOrder="12" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Payment Message</label>
+                     <comment>This message displays in the payment section of checkout and emails.</comment>
+                </field>
+            </group>
+            <group id="misc" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Misc</label>
+                <field id="debugenabled" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <comment>This controls how much is logged by Altitude functions.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="potermscode" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Terms Code for PO</label>
+                    <comment>Which terms code to use for Purchase Order at checkout? This code will get pass to P21 if the customer pays with a PO.</comment>
+                </field>
+                <field id="orderaspo" translate="label" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Send Magento order to P21 as PO?</label>
+                    <comment>If no, will use customer-entered PO as the purchase order number in P21.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="onlycheckproduct" translate="label" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Only check pricing at product level?</label>
+                    <comment></comment>
+                    <comment>This skips the pricing API call on category, home, and search pages, which improves performance.</comment>
+                </field>
+            </group>
+            <group id="orderemail" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Order Confirmation Email</label>
+                <field id="shipping_text" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Shipping Text</label>
+                     <comment>Shipping Line Replacement Text. This will replace standard text in checkout and order emails.</comment>
+                </field>
+                <field id="tax_text" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Tax Text</label>
+                    <comment>Tax Line Replacement Text. This will replace standard text in checkout and order emails.</comment>
+                </field>
+                <field id="shipping_tax_text" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Shipping &amp; Tax Text</label>
+                    <comment>Shipping &amp; Tax Line Replacement Text. This will replace standard text in checkout and order emails.</comment>
+                </field>
+            </group>
+            <group id="authorized_amount" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Authorized Amount</label>
+                <field id="authorized_amount" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Authorized Amount</label>
+                    <comment>This amount will be authorized above the amount of the actual order.  When the order is shipped, the amount will be settled to match the actual order. Flat amount or Percentage. (x.xx or xx%)</comment>
+                </field>
+            </group>
+            <group id="products" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Products</label>
+                <field id="whselist" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Warehouse list for availability</label>
+                    <comment>Used to display availability for multiple warehouses. Comma-separated list of warehouse to display availability.  (ex. 10,20,30) Leave blank to display all warehouses.</comment>
+                </field>
+                <field id="whsename" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Use warehouse name for availability?</label>
+                      <comment>If "yes", will display the warehousename instead of the warehouse code.</comment>
+                      <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="hideqtyavai" translate="label" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Hide Qty Available if not logged in?</label>
+                    <comment>If "yes", only logged-in users can see availablity.</comment>
+                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="hidewhselist" translate="label" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Hide Warehouse List?</label>
+                    <comment>If "yes", warehouse details will not be displayed.</comment>
+                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="zerostockmsg" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Zero Stock Message</label>
+                    <comment>If there is no quantity available, display this message. Leave blank to show not qty available.</comment>
+                </field>
+            </group>
+        </section>
+
+        <section id="payments" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="30" translate="label">
+            <label>Payments</label>
+            <tab>greywolfsystems</tab>
+            <resource>Altitude_P21::config</resource>
+            <group id="payments" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="190" translate="label">
+                <label>Payments</label>
+                <field id="processor" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label" type="select">
+                    <label>Processor</label>
+                    <comment>Select third party processor. The included Authorize.net module is less robust than the separately installed version.</comment>
+                    <source_model>Altitude\P21\Model\Config\Source\Processor</source_model>
+                </field>
+            </group>
+            <group id="rapidconnect" showInDefault="0" showInStore="0" showInWebsite="0" sortOrder="191" translate="label">
+                <label>Rapid Connect</label>
+
+                <field id="rctppid" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label" type="text">
+                    <label>Project ID</label>
+                    <comment/>
+                </field>
+                <field id="rcgroupid" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="15" translate="label" type="text">
+                    <label>Group ID</label>
+                    <comment/>
+                </field>
+                <field id="rcmerchantid" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="20" translate="label" type="text">
+                    <label>Merchant ID</label>
+                    <comment/>
+                </field>
+                <field id="rctid" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="25" translate="label" type="text">
+                    <label>TID</label>
+                    <comment/>
+                </field>
+                <field id="rddid" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="30" translate="label" type="text">
+                    <label>DID</label>
+                    <comment/>
+                </field>
+                <field id="rdurl" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="35" translate="label" type="text">
+                    <label>URL</label>
+                    <comment/>
+                </field>
+            </group>
+        </section>
+
+        <section id="carriers" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="customershipping" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>GreyWolfSystems Dynamic Shipping Method</label>
+                <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                     <comment>Turn on this shipping method. Will select the best shipping method based on customer location.</comment>
+                </field>
+                <field id="name" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Method Name</label>
+                    <comment>This is the name displayed during checkout for this shipping method.</comment>
+                </field>
+                <field id="price" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Price</label>
+                    <validate>validate-number validate-zero-or-greater</validate>
+                </field>
+                <field id="handling_type" translate="label" type="select" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Calculate Handling Fee</label>
+                    <source_model>Magento\Shipping\Model\Source\HandlingType</source_model>
+                </field>
+                <field id="handling_fee" translate="label" type="text" sortOrder="8" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Handling Fee</label>
+                    <validate>validate-number validate-zero-or-greater</validate>
+                </field>
+                <field id="sort_order" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Sort Order</label>
+                </field>
+                <field id="title" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Title</label>
+                </field>
+                <field id="sallowspecific" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Ship to Applicable Countries</label>
+                    <frontend_class>shipping-applicable-country</frontend_class>
+                    <source_model>Magento\Shipping\Model\Config\Source\Allspecificcountries</source_model>
+                </field>
+                <field id="specificcountry" translate="label" type="multiselect" sortOrder="91" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Ship to Specific Countries</label>
+                    <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                    <can_be_empty>1</can_be_empty>
+                </field>
+                <field id="showmethod" translate="label" type="select" sortOrder="92" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Show Method if Not Applicable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <frontend_class>shipping-skip-hide</frontend_class>
+                </field>
+                <field id="specificerrmsg" translate="label" type="textarea" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Displayed Error Message</label>
+                </field>
+            </group>
+        </section>
+
+        <section id="shipping_upcharge" translate="label" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Upcharge</label>
+            <tab>greywolfsystems</tab>
+            <resource>Altitude_Core::config</resource>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Altitude Upcharge</label>
+                <field id="upcharge_label" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Upcharge Label</label>
+                    <comment>When using a shipping upcharge, this is the label that is displayed during checkout and on the emails about the order.</comment>
+                </field>
+                <field id="shipping_methods" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Shipping Methods</label>
+                    <frontend_model>Altitude\P21\Block\Adminhtml\System\Form\Field\ShippingUpcharge</frontend_model>
+                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                     <comment>This is a list of the Magento shipping methods that will get the upcharge applied.</comment>
+                </field>
+                <field id="payment_method" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Payment Method</label>
+                    <comment>This is the payment method that will trigger an upsell.  If selected, only a combination of the shipping methods above and this payment method will cause the upsell. For example UPS Ground and Credit Card. This must match the diplayed title of the payment method.</comment>
+                </field>
+                <field id="upcharge_percent" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Upcharge Percent</label>
+                    <comment>This is the percentage of the order amount that will be used as the upcharge amount.</comment>
+                </field>
+                <field id="posttax" translate="label" type="select" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Apply fee after tax?</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>If yes, the upcharge will be applied after tax.</comment>
+                </field>
+                <field id="waive_amount" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Amount To Waive</label>
+                    <comment>If the order is at least this amount, the upcharge will be waived.</comment>
+                </field>
+                <field id="send_as_item" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Send Fee as Item</label>
+                    <comment>To send the fee to the ERP as an item, enter the item ID here.</comment>
+                </field>
+            </group>
+        </section>
+
+    </system>
+</config>

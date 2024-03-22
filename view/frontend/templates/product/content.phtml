@@ -1,0 +1,52 @@
+<?php $_product = $block->getCurrentProduct(); ?>
+<?php if ($_product->getTypeId() != 'simple'): ?>
+    <div class="product attribute sku gtooltip"><strong>Select options to see quantity available</strong></div> 
+<?php else: ?>
+    <?php $qtyAvailable = $this->getQtyInfo($_product); ?>
+
+    <?php if (isset($qtyAvailable['qty'])): ?>
+    <div class="product attribute sku gtooltip">
+        Price per <?php echo $qtyAvailable['uom'] ?><br/>
+        <?php if (is_numeric($qtyAvailable['qty']) ): ?>
+            <strong class="value">Qty Available: </strong>
+            <div class="value" itemprop="qty"><?php echo $qtyAvailable['qty'] ?></div>
+        <?php else: ?>
+            <div class="value" itemprop="qty"><?php echo $qtyAvailable['qty'] ?></div>
+        <?php endif; ?>
+        <?php if (!empty($qtyAvailable['more']) ): ?>
+            <div style="clear:both;" class="product attribute sku gtooltip">
+                <a href="#" class=gtooltip>See More</a>
+            </div>
+            <span>
+                <?php foreach($qtyAvailable['more'] as $_qty): ?>
+                <strong><?php echo $_qty['whName'] ?>:</strong> <?php echo $_qty['qty'] ?><br>
+                <?php endforeach; ?>
+            </span>
+        <?php endif; ?>
+    </div>
+    <?php endif; ?>
+<?php endif; ?>
+</div>
+<script>
+require([
+    'jquery'
+], function ($) {
+    'use strict';
+
+    $("body").on('DOMSubtreeModified', "div[itemprop*='sku']", function() {
+        if ($("div[itemprop*='sku']").text() != "") {
+            $.ajax({
+                url: "<?php echo $this->getUrl('altitudep21/p21qty/p21qty') ?>",
+                type: "GET",
+                async: false,
+                data: {
+                    sku: $("div[itemprop*='sku']").text(),
+                    isAjax: true
+                }
+            }).done(function(msg) {
+                $(".product.attribute.sku.gtooltip").html(msg.output);
+            });
+        }
+    });
+});
+</script>

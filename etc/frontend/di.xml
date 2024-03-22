@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+	<type name="Magento\ConfigurableProduct\Block\Product\View\Type\Configurable">
+        <plugin disabled="false" name="Altitude_P21_Plugin_Magento_ConfigurableProduct_Block_Product_View_Type_Configurable" sortOrder="10" type="Altitude\P21\Plugin\Magento\ConfigurableProduct\Block\Product\View\Type\Configurable"/>
+    </type>
+    <type name="Magento\Swatches\Block\Product\Renderer\Configurable">
+        <plugin disabled="false" name="Altitude_P21_Plugin_Magento_Swatches_Block_Product_Renderer_Configurable" sortOrder="10" type="Altitude\P21\Plugin\Magento\Swatches\Block\Product\Renderer\Configurable"/>
+    </type>
+
+    <type name="Magento\Catalog\Model\Product">
+        <plugin name="change_product" type="Altitude\P21\Plugin\Product" sortOrder="1"/>
+    </type>
+</config>

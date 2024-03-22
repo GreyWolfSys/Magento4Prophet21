@@ -1,0 +1,40 @@
+<script type="text/javascript">
+    require([
+        'jquery'
+    ], function ($) {
+
+        var tid = setTimeout(mycode, 2000);
+        
+        function mycode() {
+            try {
+               $('div.price-final_price .normal-price .price-container .price-wrapper .price:first')
+                                .html(
+                                    $('div.price-final_price .normal-price .price-container .price-wrapper .price:first')
+                                    .html().replace('$0.00', 'Select option to see price')
+                                );
+            }                    
+            catch(err) {
+                 // Handle the error here.
+            }
+          tid = setTimeout(mycode, 2000); // repeat myself
+        }
+
+        $(document).ready(function () {
+            $('.price').contents().filter(function () {
+                return this.nodeType == 3;
+            }).each(function () {
+                this.textContent = this.textContent.replace('$0.00', 'Select option to see price');
+            });
+
+            if ($('div.price-final_price .normal-price .price-container .price-wrapper .price:first')
+                .length) {
+                $('div.price-final_price .normal-price .price-container .price-wrapper .price:first')
+                    .html(
+                        $('div.price-final_price .normal-price .price-container .price-wrapper .price:first')
+                        .html().replace('$0.00', 'Select option to see price')
+                    );
+            }
+        })
+    });
+
+</script>

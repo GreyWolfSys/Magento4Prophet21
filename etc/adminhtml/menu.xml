@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+     <menu>
+        <add id="Altitude_P21::greywolfsystemsmenu" title="Altitude" module="Altitude_P21" sortOrder="21"  resource="Magento_Backend::content"/>
+        <add id="Altitude_P21::greywolfsystems" title="Settings" module="Altitude_P21" parent="Altitude_P21::greywolfsystemsmenu" sortOrder="1" resource="Magento_Backend::content"/>
+        <add id="Altitude_P21::greywolfsystemsapps" title="Applications" module="Altitude_P21" parent="Altitude_P21::greywolfsystemsmenu" sortOrder="10" resource="Magento_Backend::content"/>
+
+        <add id="Altitude_P21::defaults" title="Defaults" module="Altitude_P21" parent="Altitude_P21::greywolfsystems" sortOrder="1" action="adminhtml/system_config/edit/section/defaults" resource="Altitude_P21::defaults"/>
+        <add id="Altitude_P21::connectivity" title="Connectivity" module="Altitude_P21" parent="Altitude_P21::greywolfsystems" sortOrder="50" action="adminhtml/system_config/edit/section/connectivity" resource="Altitude_P21::connectivity"/>
+
+        <add id="Altitude_P21::payments"  dependsOnModule="Altitude_P21" title="Payment Processor" module="Altitude_P21" parent="Altitude_P21::greywolfsystems" sortOrder="15" action="adminhtml/system_config/edit/section/payments" resource="Altitude_P21::payments"/>
+
+        <add id="Altitude_P21::shipping_upcharge"  dependsOnModule="Altitude_P21" title="Shipping Upcharge" module="Altitude_P21" parent="Altitude_P21::greywolfsystems" sortOrder="10" action="adminhtml/system_config/edit/section/shipping_upcharge" resource="Altitude_P21::shipping_upcharge"/>
+
+     </menu>
+</config>

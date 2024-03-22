@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+   <table name="quote_address" resource="default" engine="innodb">
+      <column xsi:type="decimal" name="authorized_amount" nullable="true" default="0.00" comment="Authorized Amount" precision="20" scale="4"  />
+      <column xsi:type="decimal" name="base_authorized_amount" nullable="true" comment="Base Authorized Amount" precision="20" scale="4"  />
+	  <column xsi:type="decimal" name="upcharge_total" nullable="true" comment="Shipping Upcharge" precision="20" scale="4"  />
+	  <column xsi:type="decimal" name="base_upcharge_total" nullable="true" comment="Base Shipping Upcharge"  precision="20" scale="4" />
+   </table>
+
+   <table name="quote" resource="default" engine="innodb">
+      <column xsi:type="decimal" name="authorized_amount" nullable="true" default="0.00" comment="Authorized Amount" precision="20" scale="4"  />
+      <column xsi:type="decimal" name="base_authorized_amount" nullable="true" comment="Base Authorized Amount" precision="20" scale="4"  />
+	  <column xsi:type="decimal" name="upcharge_total" nullable="true" comment="Shipping Upcharge" precision="20" scale="4"  />
+	  <column xsi:type="decimal" name="base_upcharge_total" nullable="true" comment="Base Shipping Upcharge" precision="20" scale="4"  />
+   </table>
+
+   <table name="sales_order" resource="default" engine="innodb">
+      <column xsi:type="decimal" name="authorized_amount" nullable="true" default="0.00" comment="Authorized Amount" precision="20" scale="4"  />
+      <column xsi:type="decimal" name="base_authorized_amount" nullable="true" comment="Base Authorized Amount" precision="20" scale="4"  />
+	  <column xsi:type="decimal" name="upcharge_total" nullable="true" comment="Shipping Upcharge" precision="20" scale="4"  />
+	  <column xsi:type="decimal" name="base_upcharge_total" nullable="true" comment="Base Shipping Upcharge" precision="20" scale="4"  />
+   </table>
+
+   <table name="sales_invoice" resource="default" engine="innodb">
+      <column xsi:type="decimal" name="authorized_amount" nullable="true" default="0.00" comment="Authorized Amount" precision="20" scale="4"  />
+      <column xsi:type="decimal" name="base_authorized_amount" nullable="true" comment="Base Authorized Amount" precision="20" scale="4"  />
+	  <column xsi:type="decimal" name="upcharge_total" nullable="true" comment="Shipping Upcharge" precision="20" scale="4"  />
+	  <column xsi:type="decimal" name="base_upcharge_total" nullable="true" comment="Base Shipping Upcharge" precision="20" scale="4"  />
+   </table>
+</schema>

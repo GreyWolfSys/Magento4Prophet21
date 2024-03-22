@@ -1,0 +1,98 @@
+<?php
+    $data = $this->getOrders();
+    $invstartdate = $data['invstartdate'];
+    $invenddate = $data['invenddate'];
+    $ordersList = $data['ordersList'];
+    
+    if (isset($ordersList["SalesOrderListResponseContainerItems"])){
+            $arr=$ordersList["SalesOrderListResponseContainerItems"];
+     } else {
+         $arr=array($ordersList);
+     }
+   //  var_dump($arr);
+  
+    if (isset($_REQUEST["sortfield"])){
+        // if (1==1){
+        $arr=$this->array_sort_by_column($arr,$_REQUEST["sortfield"],$_REQUEST["sortorder"]);
+        //var_dump($ordersList["SalesOrderListResponseContainerItems"]);
+    }
+    $sortorder="";
+    //echo $_REQUEST["sortorder"] . "<br>";
+    if (!isset($_REQUEST["sortorder"])){
+        $sortorder="asc";
+    }elseif ($_REQUEST["sortorder"]=="asc"){
+        $sortorder="desc";
+    } else {
+        $sortorder="asc";
+    }
+    $sorturl=$block->getUrl('*/*/order');
+?>
+<form method="post">
+    <table class="gwinvoicetable table data" border="0">
+        <thead>
+            <tr>
+                <th style="font-weight:bold;font-size: 18px;vertical-align: middle;text-align: center;" colspan="2">Start Date:</th>
+                <th style="vertical-align: middle;"><input type="text" id="startdate" name="startdate" value="<?php echo $invstartdate ?>"></th>
+                <th style="font-weight:bold;font-size: 18px;vertical-align: middle;text-align: center;" colspan="2">End Date:</th>
+                <th style="vertical-align: middle;"><input type="text" id="enddate" name="enddate" value="<?php echo $invenddate ?>"></th>
+                <th style="font-weight:bold;font-size: 18px;vertical-align: middle;text-align: center;" colspan="2">
+                    <input type="hidden" name="ordertype" value="order">
+                    <button type="submit" class="button action primary">Submit</button>
+                </th>
+            </tr>
+            <tr>
+                <th><a href="<?php echo $sorturl ?>?sortfield=order_no&sortorder=<?php echo $sortorder ?>">Order Number</a></th>
+                <th></th>
+                <th><a href="<?php echo $sorturl ?>?sortfield=OrderDate&sortorder=<?php echo $sortorder ?>">Date</a></th>
+                <th><a href="<?php echo $sorturl ?>?sortfield=po_no&sortorder=<?php echo $sortorder ?>">PO #</a></th>
+                <th></th>
+                <th><a href="<?php echo $sorturl ?>?sortfield=terms_desc&sortorder=<?php echo $sortorder ?>">Terms</a></th>
+                <th><a href="<?php echo $sorturl ?>?sortfield=promise_date&sortorder=<?php echo $sortorder ?>">Promise Date</a></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (isset($arr[0]['ErrorDescription']) && $arr[0]['ErrorDescription'] != ""): ?>
+                <tr><td colspan="9"><?php echo $arr[0]["ErrorDescription"] ?></td></tr>
+            <?php elseif (isset($ordersList['_errorMsg']) && $ordersList['_errorMsg'] != ""): ?>
+                 <tr><td colspan="9"><?php echo $ordersList["_errorMsg"] ?></td></tr>
+            <?php elseif (isset($arr)): ?>
+                <?php foreach ($arr as $item): ?>
+                    <?php
+                        if ((!isset($item["order_date"]) || !isset($item["order_no"])) && (!isset($item["OrderDate"]) || !isset($item["OrderNo"]))) {
+                            continue;
+                        }
+                      
+                        $datecheck=(isset( $item["order_date"]) ? $item["order_date"] : $item["OrderDate"]);
+                        if (strtotime($datecheck) < strtotime($invstartdate) || strtotime($invstartdate) > strtotime($invenddate)){
+                            continue;
+                        }
+                        
+                    ?>
+                    <tr class="orderheader">
+                        <td data-th="Order Number"><a href="<?php echo  $block->getUrl('altitudep21/customer/orderdetail') . "?order=" . (isset($item["order_no"]) ? $item["order_no"] : $item["OrderNo"]) ?>" alt="View Order" title="View Order1"><?php echo isset($item["order_no"]) ? $item["order_no"] : $item["OrderNo"] ?></a></td>
+                        <td></td>
+                        <td data-th="Date"><?php echo date("m/d/Y",strtotime(isset( $item["order_date"]) ? $item["order_date"] : $item["OrderDate"]))  ?></td>
+                        <td data-th="PO&nbsp;#"><?php echo isset($item["po_no"]) ? $item["po_no"] : $item["PoNo"]  ?></td>
+                        <td></td>
+                        <td data-th="Terms"><?php echo isset($item["terms_desc"]) ? $item["terms_desc"] : $item["Terms"]  ?></td>
+                        <td data-th="Promise&nbsp;Date"><?php echo date("m/d/Y",strtotime(isset($item["promise_date"]) ? $item["promise_date"] : $item["PromiseDate"]))  ?></td>
+                        <td></td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <?php $item = $ordersList; ?>
+                <tr class="orderheader">
+                    <td data-th="Order Number"><a href="<?php echo $block->getUrl('altitudep21/customer/orderdetail') . "?order=" . (isset($item["order_no"]) ? $item["order_no"] : $item["OrderNo"]) ?>" alt="View Order" title="View Order2"><?php echo (isset($item["order_no"]) ? $item["order_no"] : $item["OrderNo"])  ?></a></td>
+                    <td></td>
+                    <td data-th="Date"><?php echo date("m/d/Y",strtotime(isset( $item["order_date"]) ? $item["order_date"] : $item["OrderDate"])) ?></td>
+                    <td data-th="PO&nbsp;#"><?php echo  isset($item["po_no"]) ? $item["po_no"] : $item["PoNo"]  ?></td>
+                    <td></td>
+                    <td data-th="Terms"><?php echo isset($item["terms_desc"]) ? $item["terms_desc"] : $item["Terms"] ?></td>
+                    <td data-th="Promise&nbsp;Date"><?php echo date("m/d/Y",strtotime(isset($item["promise_date"]) ? $item["promise_date"] : $item["PromiseDate"])) ?></td>
+                    <td></td>
+                </tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+</form>

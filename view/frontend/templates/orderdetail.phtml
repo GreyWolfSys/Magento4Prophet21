@@ -1,0 +1,197 @@
+<?php
+$data = $this->getOrder();
+$order = $data['order'];
+$customerNumber = $data['customerNumber'];
+$customerSelect = $data['customerSelect'];
+$orderItems = $data['orderItems'];
+$chkCounter = 1;
+$total = 0;
+
+if (isset($order["po_no"])) {
+	$custpo = $order["po_no"];
+} else {
+	$custpo = "";
+}
+
+?>
+<form method="post">
+	<div style="text-align: right;float: right;margin-top: -70px;">
+		<input type="button" value="Back" class="action subscribe primary" onclick="window.location.href='<?php echo $block->getUrl('p21order/customer/order') ?>'" />
+	</div>
+	<table class="gworderbodytable data">
+		<tr>
+			<td width="50%"></td>
+			<td style='font-weight:bold;' align="right">Date:</td>
+			<td><?php echo $order["order_date"] ?></td>
+		</tr>
+		<tr><td /><td style='font-weight:bold;' align="right">Order Number:</td><td width:150px><?php echo $order["order_no"] ?></td></tr>
+		<tr><td /><td style='font-weight:bold;' align="right">PO Number:</td><td><?php echo $custpo ?></td></tr>
+		<tr><td /><td style='font-weight:bold;' align="right">Customer Number:</td><td><?php echo $customerNumber ?></td></tr>
+	</table>
+
+	<div class="block block-order-details-view">
+		<div class="block-title"><strong>Order Information</strong></div>
+		<div class="block-content">
+			<div class="box box-order-billing-address">
+				<strong class="box-title"><span>Billing Address</span></strong>
+				<div class="box-content">
+					<address>
+						<?php echo $customerSelect["customer_name"]; ?><br>
+						<?php if (isset($customerSelect["mail_address1"])): ?>
+							<?php echo $customerSelect["mail_address1"]; ?><br>
+						<?php endif; ?>
+
+						<?php if (isset($customerSelect["mail_address2"]) && $customerSelect["mail_address2"] != ""): ?>
+							<?php echo $customerSelect["mail_address2"]; ?><br>
+						<?php endif; ?>
+
+						<?php if (isset($customerSelect["mail_city"])): ?>
+							<?php echo $customerSelect["mail_city"]; ?>,
+						<?php endif; ?>
+
+						<?php if (isset($customerSelect["mail_state"])): ?>
+							<?php echo $customerSelect["mail_state"]; ?>
+						<?php endif; ?>
+
+						<?php if (isset($customerSelect["10012"])): ?>
+							<?php echo $customerSelect["10012"]; ?><br />
+						<?php endif; ?>
+                    </address>
+                </div>
+            </div>
+
+			<div class="box box-order-shipping-address">
+				<strong class="box-title"><span>Shipping Address</span></strong>
+				<div class="box-content">
+					<address>
+						<?php if (isset($order["ship2_name"])): ?>
+							<?php echo $order["ship2_name"]; ?><br>
+						<?php else: ?>
+							<?php echo $order["customer_name"]; ?><br>
+						<?php endif; ?>
+
+						<?php if (isset($order["ship2_add1"]) && $order["ship2_add1"] != ""): ?>
+							<?php echo $order["ship2_add1"]; ?><br>
+						<?php else: ?>
+							<?php echo $order["mail_address1"]; ?><br>
+						<?php endif; ?>
+
+						<?php if (isset($order["ship2_add2"]) && $order["ship2_add2"] != ""): ?>
+							<?php echo $order["ship2_add2"]; ?><br>
+						<?php elseif (isset($order["mail_address2"]) && $order["mail_address2"] != ""): ?>
+							<?php echo $order["mail_address2"]; ?><br>
+						<?php endif; ?>
+
+						<?php if (isset($order["ship2_city"])): ?>
+							<?php echo $order["ship2_city"]; ?>,
+						<?php else: ?>
+							<?php echo $order["mail_city"]; ?>,
+						<?php endif; ?>
+
+						<?php if (isset($order["ship2_state"])): ?>
+							<?php echo $order["ship2_state"]; ?>
+						<?php else: ?>
+							<?php echo $order["mail_state"]; ?>
+						<?php endif; ?>
+
+						<?php if (isset($order["ship2_zip"])): ?>
+							<?php echo $order["ship2_zip"]; ?><br />
+						<?php else: ?>
+							<?php echo $order["mail_postal_code"]; ?><br />
+						<?php endif; ?>
+
+						<?php if (isset($order["ship2_country"])): ?>
+							<?php echo $order["ship2_country"]; ?><br />
+						<?php endif; ?>
+
+						<?php if (isset($customerSelect["central_phone_number"])): ?>
+							<?php
+								$phoneNumber = preg_replace('/\d{3}/', '$0-', str_replace('.', null, trim($customerSelect["central_phone_number"])), 2);
+								echo str_replace("--", "-", $phoneNumber);
+							?>
+						<?php endif; ?>
+					</address>
+				</div>
+			</div>
+
+			<div class="box box-order-shipping-method">
+				<div class="box-content">
+					<strong>Ship Date:</strong>
+						<?php if (isset($order["requested_date"])): ?>
+							<?php echo $order["requested_date"]; ?>
+						<?php endif; ?><br />
+					<strong>Terms:</strong>
+						<?php if (isset($order["terms_desc"])): ?>
+							<?php echo $order["terms_desc"]; ?>
+						<?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+	<?php if (isset($orderItems["ErrorDescription"]) && !empty($orderItems["ErrorDescription"])): ?>
+		<p>No lines available.</p>
+	<?php else: ?>
+		<table class="gworderlinetable data table">
+			<thead>
+				<tr class="orderlinehead" style="font-weight:bold;" align="center">
+					<th>Reorder!</th>
+					<th align="left">SKU</th>
+					<th align="left">Description</th>
+					<th align="right">Price</th>
+					<th align="center">Unit</th>
+					<th align="right">Qty Ordered</th>
+					<th align="right">Qty Shipped</th>
+					<th align="right">Net Amt</th>
+				</tr>
+			</thead>
+			<?php if (isset($orderItems["company_no"])): ?>
+				<tr class=orderline >
+					<td data-th="Reorder" class="qty" align="center">
+						<input type=checkbox id="reorder<?php echo  $chkCounter ?>" name="reorder<?php echo  $chkCounter ?>" value="<?php echo  $orderItems["item_id"] ?>">
+						<input type=hidden id="reorderitem<?php echo  $chkCounter ?>" name="reorderitem<?php echo  $chkCounter ?>"  value="<?php echo  $orderItems["item_id"] ?>"></td>
+					<td data-th="SKU"><?php echo  $orderItems["item_id"] ?></td>
+					<td data-th="Description"><?php echo  $orderItems["item_desc"] ?></td>
+					<td data-th="Price" class="qty">$<?php echo  money_format('%.2n', $orderItems["unit_price"]) ?><input type=hidden id="reorderprice<?php echo  $chkCounter ?>" name="reorderprice<?php echo  $chkCounter ?>"  value="<?php echo  $orderItems["unit_price"] ?>"></td>
+					<td data-th="Unit" class="qty"><?php echo  $orderItems["unit_of_measure"] ?><input type=hidden id="reorderunit<?php echo  $chkCounter ?>" name="reorderunit<?php echo  $chkCounter ?>"  value="<?php echo  $orderItems["unit_of_measure"] ?>"></td>
+					<td data-th="Qty Ordered" class="qty"><?php echo  number_format($orderItems["qty_ordered"], 2) ?><input type=hidden id="reorderqty<?php echo  $chkCounter ?>" name="reorderqty<?php echo  $chkCounter ?>"  value="<?php echo  $orderItems["qty_ordered"] ?>"></td>
+					<td data-th="Qty Shipped" class="qty"><?php echo  number_format($orderItems["qty_invoiced"], 2) ?></td>
+					<td data-th="Net Amt" class="qty">$<?php echo  money_format('%.2n', $orderItems["unit_price"] * $orderItems["qty_ordered"]) ?></td>
+					<?php
+						$total += $orderItems["unit_price"] * $orderItems["qty_ordered"];
+						$chkCounter++;
+					?>
+				</tr>
+			<?php elseif (isset($orderItems["SalesOrderLinesSelectResponseContainerItems"])): ?>
+				<?php foreach ($orderItems["SalesOrderLinesSelectResponseContainerItems"] as $itemLine): ?>
+					<tr class=orderline ><td data-th="Reorder" class="qty"><input type=checkbox id="reorder<?php echo  $chkCounter ?>" name="reorder<?php echo  $chkCounter ?>" value="<?php echo  $itemLine["item_id"] ?>"><input type=hidden id="reorderitem<?php echo  $chkCounter ?>" name="reorderitem<?php echo  $chkCounter ?>"  value="<?php echo  $itemLine["item_id"] ?>"></td>
+						<td data-th="SKU"><?php echo $itemLine["item_id"] ?></td>
+						<td data-th="Description"><?php echo  $itemLine["item_desc"] ?></td>
+						<td data-th="Price" class="qty">$<?php echo  money_format('%.2n', $itemLine["unit_price"]) ?><input type=hidden id="reorderprice<?php echo  $chkCounter ?>" name="reorderprice<?php echo  $chkCounter ?>"  value="<?php echo  $itemLine["unit_price"] ?>"></td>
+						<td data-th="Unit" class="qty"><?php echo  $itemLine["unit_of_measure"] ?><input type=hidden id="reorderunit<?php echo  $chkCounter ?>" name="reorderunit<?php echo  $chkCounter ?>"  value="<?php echo  $itemLine["unit_of_measure"] ?>"></td>
+						<td data-th="Qty Ordered" class="qty"><?php echo  number_format($itemLine["qty_ordered"], 2) ?><input type=hidden id="reorderqty<?php echo  $chkCounter ?>" name="reorderqty<?php echo  $chkCounter ?>"  value="<?php echo  $itemLine["qty_ordered"] ?>"></td>
+						<td data-th="Qty Shipped" class="qty"><?php echo  number_format($itemLine["qty_invoiced"], 2) ?></td>
+						<td data-th="Net Amt" class="qty">$<?php echo  money_format('%.2n', $itemLine["unit_price"] * $itemLine["qty_ordered"]) ?></td>
+					</tr>
+					<?php
+						$total = ($itemLine["unit_price"] * $itemLine["qty_ordered"]) + $total;
+						$chkCounter += 1;
+					?>
+				<?php endforeach; ?>
+			<?php endif; ?>
+			<tr>
+				<td>
+					<input type="hidden" id="reorderitems" name="reorderitems" value="yes">
+					<input type="hidden" id="totalitems" name="totalitems" value='<?php echo ($chkCounter - 1) ?>'>
+					<input type="submit" class="action subscribe primary" value="Reorder" ></td>
+				<td></td>
+				<td colspan=5 align="right"><strong>Subotal:</td>
+				<td valign="middle" align="right">$<?php echo money_format('%.2n', (floatval($total))) ?></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td colspan=6 align="right"><strong>Total:</td>
+				<td valign="middle" align="right">$<?php echo money_format('%.2n', (floatval($total))) ?></td>
+			</tr>
+		</table>
+	<?php endif; ?>
+</form>

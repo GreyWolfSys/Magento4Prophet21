@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="default">
+        <job name="gws_updateorderqueue" instance="Altitude\P21\Cron\UpdateOrderQueue" method="execute">
+            <schedule>*/15 * * * *</schedule>
+        </job>
+        <job name="gws_updateorderfields" instance="Altitude\P21\Cron\UpdateOrderFields" method="execute">
+            <schedule>*/15 * * * *</schedule>
+        </job>
+        <job name="gws_updateorderpackage" instance="Altitude\P21\Cron\UpdatePackageShipping" method="execute">
+            <schedule>*/15 * * * *</schedule>
+        </job>
+		<job name="altitude_p21pricing_fetchprice" instance="Altitude\P21\Cron\FetchPrice" method="execute">
+			<schedule>0 5 * * *</schedule>
+		</job>
+    </group>
+</config>

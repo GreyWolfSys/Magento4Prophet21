@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="customer_register_success">
+        <observer name="customer_login_observer" instance="Altitude\P21\Observer\CustomerRegister" />
+    </event>
+
+    <event name="checkout_onepage_controller_success_action">
+        <observer name="gw_multorder_checkout_onepage_controller_success_action" instance="Altitude\P21\Observer\Success"  />
+        <observer name="belvg_verpage_controller_front_send_response_before3" instance="Altitude\P21\Model\GWCartOrder"  />
+        <observer name="gw_shippingupcharge_checkout_success_action" instance="Altitude\P21\Observer\SuccessShip"  />
+    </event>
+    <event name="checkout_submit_all_after123">
+        <observer name="belvg_verpage_controller_front_send_response_before2" instance="Altitude\P21\Model\GWCartOrder"  />
+    </event>
+    <event name="sales_order_invoice_save_after">
+        <observer name="belvg_verpage_controller_front_send_response_before" instance="Altitude\P21\Model\GWCart"  />
+    </event>
+
+
+    <event name="sales_order_invoice_save_after123">
+        <observer instance="Altitude\P21\Observer\Sales\OrderInvoiceSaveAfter" name="altitude_p21payments_observer_sales_orderinvoicesaveafter_sales_order_invoice_save_after"/>
+    </event>
+
+    <event name="sales_model_service_quote_submit_before">
+        <observer name="gw_authorized_amount" instance="Altitude\P21\Observer\AddFeeToOrderObserver" />
+        <observer name="gw_shipping_upcharge" instance="Altitude\P21\Observer\AddFeeToOrderObserverShip" />
+    </event>
+
+
+    <event name="catalog_product_get_final_price">
+        <observer name="belvg_verpage_controller_front_send_response_before1" instance="Altitude\P21\Model\GetP21Price"  />
+    </event>
+    <event name="catalog_product_collection_load_after">
+        <observer name="belvg_verpage_controller_front_send_response_before6" instance="Altitude\P21\Model\GetP21Price"  />
+    </event>
+
+
+    <event name="customer_login">
+        <observer name="customer_login_observer" instance="Altitude\P21\Observer\CustomerLogin" />
+    </event>
+</config>

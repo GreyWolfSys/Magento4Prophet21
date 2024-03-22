@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <connectivity>
+            <webservices>
+                <apikey></apikey>
+                <apiurl>https://gwws.greywolf.com/p21/</apiurl>
+            </webservices>
+        </connectivity>
+        <defaults>
+            <gwcustomer>
+                <erpcustomerid></erpcustomerid>
+                <cono>1</cono>
+                <whse></whse>
+                <shipviaty></shipviaty>
+                <shipto2erp>1</shipto2erp>
+                <multip21orders>1</multip21orders> 
+                <shipping_per_wh>0</shipping_per_wh>
+                <shipping_notice>0</shipping_notice>
+                <allow_edit_address>1</allow_edit_address>
+                <address_to_erp>0</address_to_erp>
+                <disable_address_import>0</disable_address_import>
+            </gwcustomer>
+            <products>
+                <hideqtyavai>1</hideqtyavai>
+                <whselist></whselist>
+                <whsename>1</whsename>
+                <hidewhselist>0</hidewhselist>
+                <zerostockmsg>Available to Order</zerostockmsg>
+            </products>
+            <orderemail>
+                <shipping_text></shipping_text>
+                <tax_text></tax_text>
+                <shipping_tax_text></shipping_tax_text>
+            </orderemail>
+            <display>
+                <invstartdate>01/01/2022</invstartdate>
+            </display>
+            <shoppingcart>
+                <transtype>qu</transtype> 
+                <defaultterms></defaultterms>
+                <credit_status>COD</credit_status>
+                <price_library></price_library>
+                <slsrepin>hs</slsrepin>
+                <taker>0</taker>
+                <slsrepout>hs</slsrepout> 
+                <operinit>sys</operinit> 
+                <holdifover></holdifover>
+                <sendtoerpinv>1</sendtoerpinv>
+                <autoinvoice>0</autoinvoice>
+                <payment_message></payment_message>
+            </shoppingcart>
+            <misc>
+                <updateqty>1</updateqty>
+                <onlycheckproduct>1</onlycheckproduct>
+                <potermscode></potermscode>
+                <orderaspo>1</orderaspo>
+                <debugenabled>0</debugenabled>
+            </misc>
+        </defaults>
+        <payments>
+            <payments>
+                <processor/>
+            </payments>
+            <rapidconnect>
+                <rctppid/>
+                <rcgroupid/>
+                <rcmerchantid/>
+                <rctid/>
+                <rddid/>
+                <rdurl>https://stg.dw.us.fdcnet.biz/rc</rdurl>
+            </rapidconnect>
+        </payments>
+        <carriers>
+            <customershipping>
+                <active>1</active>
+                <sallowspecific>0</sallowspecific>
+                <model>Altitude\P21\Model\Carrier\Shipping</model>
+                <name>GW Shipping</name>
+                <price>0.00</price>
+                <title>Dynamic Shipping</title>
+                <specificerrmsg>This shipping method is not available. To use this shipping method, please contact us.</specificerrmsg>
+                <handling_type>F</handling_type>
+            </customershipping>
+        </carriers>
+        <shipping_upcharge>
+            <general>
+                <upcharge_label>Processing Fee</upcharge_label>
+                <payment_method>Credit Card</payment_method>
+                <upcharge_percent></upcharge_percent>
+                <posttax>0</posttax>
+                <waive_amount>1000</waive_amount>
+                <send_as_item></send_as_item>
+            </general>
+        </shipping_upcharge>
+    </default>
+</config>

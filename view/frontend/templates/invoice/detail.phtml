@@ -1,0 +1,460 @@
+<?php
+
+	$data = $this->getInvoice();
+	$order = $data['order'];
+	$customerNumber = $data['customerNumber'];
+	$customerSelect = $data['customerSelect'];
+	$orderItems = $data['orderItems'];
+	$invoiceHead=$data['invoice'];
+	
+
+
+
+	$shippingList = $data['shipping'];
+	$apiurl=$data['apiurl'];
+	
+	$invoice1=$data['invoice'];
+    
+     $processor = $data['processor'];
+    
+//	var_dump($processor);
+	
+	$chkCounter = 1;
+	$total = 0;
+    $invoice=$_REQUEST["invoice"];
+    if (!isset($invoice)){
+        $invoice=$order["order_no"];
+    }
+	if (isset($order["po_no"])) {
+		$custpo = $order["po_no"];
+	} else {
+		$custpo = "";
+	}
+	
+	if (isset($shippingList["SalesShipToListResponseContainerItems"])) {
+	    foreach ($shippingList["SalesShipToListResponseContainerItems"] as $item ) {
+	        if ((isset($item["ship_to_id"]) ? $item["ship_to_id"] : $item["AddressId"])==(isset($order["customer_id"]) ? $order["customer_id"] : $order["CustomerId"]) ){
+	            $shipping=$item;
+	            break;
+	        }
+	    }
+	} else {
+	    $shipping=$shippingList;
+	}
+?>
+<form method="post" action="<?php echo $block->getUrl("*/*/payinvoice") ?>">
+	<div style="text-align: right;float: right;margin-top: -45px;">
+		<button type="button" class="action subscribe primary" onclick="window.location.href='<?php echo $block->getUrl('altitudep21/customer/invoice') ?>'">Back</button>
+	</div>
+	<table class="gworderbodytable data" style="width:75%;">
+		<tr>
+			<td width="50%"></td>
+			<td style='font-weight:bold;' align="right">Date:</td>
+			<td><?php echo (isset($order["order_date"]) ? $order["order_date"] : $order["OrderDate"])  ?></td>
+		</tr>
+		<tr>
+			<td />
+			<td style='font-weight:bold;' align="right">Order Number:</td>
+			<td width="150px"><?php echo isset($order["order_no"]) ? $order["order_no"]  : $order["OrderNo"] ?></td>
+		</tr>
+			<tr>
+			<td />
+			<td style='font-weight:bold;' align="right">Invoice Number:</td>
+			<td width="150px"><?php echo $invoice ?></td>
+		</tr>
+		<tr>
+			<td />
+			<td style='font-weight:bold;' align="right">PO Number:</td>
+			<td><?php echo $custpo ?></td>
+		</tr>
+		<tr>
+			<td />
+			<td style='font-weight:bold;' align="right">Customer Number:</td>
+			<td><?php echo $customerNumber ?></td>
+		</tr>
+	</table>
+
+	<div class="block block-order-details-view">
+		<div class="block-title"><strong>Order Information</strong></div>
+		<div class="block-content">
+			<div class="box box-order-billing-address">
+				<strong class="box-title"><span>Billing Address</span></strong>
+				<div class="box-content">
+					<address>
+						<?php echo isset($customerSelect["customer_name"]) ? $customerSelect["customer_name"] : $customerSelect["CustomerName"] ; ?><br>
+
+						<?php if (isset($shipping["mail_address1"])): ?>
+							<?php echo $shipping["mail_address1"]; ?><br>
+						<?php endif; ?>
+						<?php if (isset($shipping["MailAddress1"])): ?>
+							<?php echo $shipping["MailAddress1"]; ?><br>
+						<?php endif; ?>
+
+						<?php if (isset($shipping["mail_address2"]) && $shipping["mail_address2"] != ""): ?>
+							<?php echo $shipping["mail_address2"]; ?><br>
+						<?php endif; ?>
+
+                        <?php if (isset($shipping["MailAddress2"]) && $shipping["MailAddress2"] != ""): ?>
+							<?php echo $shipping["MailAddress2"]; ?><br>
+						<?php endif; ?>
+
+						<?php if (isset($shipping["mail_city"])): ?>
+							<?php echo $shipping["mail_city"]; ?>,
+						<?php endif; ?>
+
+                        <?php if (isset($shipping["MailCity"])): ?>
+							<?php echo $shipping["MailCity"]; ?>,
+						<?php endif; ?>
+
+						<?php if (isset($shipping["mail_state"])): ?>
+							<?php echo $shipping["mail_state"]; ?>
+						<?php endif; ?>
+
+						<?php if (isset($shipping["MailState"])): ?>
+							<?php echo $shipping["MailState"]; ?>
+						<?php endif; ?>
+
+						<?php if (isset($shipping["mail_postal_code"])): ?>
+							<?php echo $shipping["mail_postal_code"]; ?><br />
+						<?php endif; ?>
+
+						<?php if (isset($shipping["MailPostalCode"])): ?>
+							<?php echo $shipping["MailPostalCode"]; ?><br />
+						<?php endif; ?>
+                    </address>
+                </div>
+            </div>
+
+			<div class="box box-order-shipping-address">
+				<strong class="box-title"><span>Shipping Address</span></strong>
+				<div class="box-content">
+					<address>
+					 <?php if (isset( $order["customer_name"])): ?>
+						<?php if (isset($order["ship2_name"])): ?>
+							<?php echo $order["ship2_name"]; ?><br>
+						<?php else: ?>
+							<?php echo $order["customer_name"]; ?><br>
+						<?php endif; ?>
+
+						<?php if (isset($order["ship2_add1"]) && $order["ship2_add1"] != ""): ?>
+							<?php echo $order["ship2_add1"]; ?><br>
+						<?php else: ?>
+							<?php echo $order["mail_address1"]; ?><br>
+						<?php endif; ?>
+
+						<?php if (isset($order["ship2_add2"]) && $order["ship2_add2"] != ""): ?>
+							<?php echo $order["ship2_add2"]; ?><br>
+						<?php elseif (isset($order["mail_address2"]) && $order["mail_address2"] != ""): ?>
+							<?php echo $order["mail_address2"]; ?><br>
+						<?php endif; ?>
+
+						<?php if (isset($order["ship2_city"])): ?>
+							<?php echo $order["ship2_city"]; ?>,
+						<?php else: ?>
+							<?php echo $order["mail_city"]; ?>,
+						<?php endif; ?>
+
+						<?php if (isset($order["ship2_state"])): ?>
+							<?php echo $order["ship2_state"]; ?>
+						<?php else: ?>
+							<?php echo $order["mail_state"]; ?>
+						<?php endif; ?>
+
+						<?php if (isset($order["ship2_zip"])): ?>
+							<?php echo $order["ship2_zip"]; ?><br />
+						<?php else: ?>
+							<?php echo $order["mail_postal_code"]; ?><br />
+						<?php endif; ?>
+
+						<?php if (isset($order["ship2_country"])): ?>
+							<?php echo $order["ship2_country"]; ?><br />
+						<?php endif; ?>
+
+						<?php if (isset($customerSelect["central_phone_number"])): ?>
+							<?php
+								$phoneNumber = preg_replace('/\d{3}/', '$0-', str_replace('.', '', trim($customerSelect["central_phone_number"])), 2);
+								echo str_replace("--", "-", $phoneNumber);
+							?>
+						<?php endif; ?>
+					<?php endif; ?>
+				    	<?php if (isset( $order["CustomerId"])): ?>
+					    <?php if (isset($order["ShipToName"])): ?>
+							<?php echo $order["ShipToName"]; ?><br>
+						<?php else: ?>
+							<?php echo $order["CustomerName"]; ?><br>
+						<?php endif; ?>
+
+						<?php if (isset($order["ShipToAddress1"]) && $order["ShipToAddress1"] != ""): ?>
+							<?php echo $order["ShipToAddress1"]; ?><br>
+						<?php endif; ?>
+
+						<?php if (isset($order["ShipToAddress2"]) && $order["ShipToAddress2"] != ""): ?>
+							<?php echo $order["ShipToAddress2"]; ?><br>
+						<?php endif; ?>
+
+						<?php if (isset($order["ShipToCity"])): ?>
+							<?php echo $order["ShipToCity"]; ?>,
+						<?php endif; ?>
+
+						<?php if (isset($order["OeHdrShip2State"])): ?>
+							<?php echo $order["OeHdrShip2State"]; ?>
+						<?php endif; ?>
+
+						<?php if (isset($order["ZipCode"])): ?>
+							<?php echo $order["ZipCode"]; ?><br />
+						<?php endif; ?>
+
+						<?php if (isset($order["ShipToCountry"])): ?>
+							<?php echo $order["ShipToCountry"]; ?><br />
+						<?php endif; ?>
+
+						<?php if (isset($customerSelect["ShipToPhone"])): ?>
+							<?php
+								$phoneNumber = preg_replace('/\d{3}/', '$0-', str_replace('.', null, trim($customerSelect["ShipToPhone"])), 2);
+								echo str_replace("--", "-", $phoneNumber);
+							?>
+						<?php endif; ?>
+					<?php endif; ?>
+					</address>
+				</div>
+			</div>
+
+			<div class="box box-order-shipping-method">
+			    <strong class="box-title"><span>Order Information</span></strong>
+				<div class="box-content">
+					<strong>Ship Date:</strong>
+    					<?php if (isset($order[(isset($order["requested_date"]) ? "requested_date" : "RequestedDate")])): ?>
+     							<?php echo $order[(isset($order["requested_date"]) ? "requested_date" : "RequestedDate")]; ?>
+    						<br />
+    					<?php endif; ?>
+
+					<strong>Terms:</strong>
+    					<?php if (isset($order["terms_desc"])): ?>
+
+    							<?php echo $order["terms_desc"]; ?>
+
+    					<?php endif; ?>
+    					<?php if (isset($order["Terms"])): ?>
+
+    							<?php echo $order["Terms"]; ?>
+
+    					<?php endif; ?>
+    					<?php if (isset($invoiceHead["carrier_name"]) ): ?>
+                                <br /><strong>Terms:</strong>
+    							<?php echo $invoiceHead["carrier_name"]; ?>
+
+    					<?php endif; ?>
+    					<?php if (isset($invoiceHead["tracking_no"]) ): ?>
+                                <br /><strong>Tracking #</strong>
+    							<?php echo $invoiceHead["tracking_no"]; ?>
+
+    					<?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+	<?php if (isset($orderItems["ErrorDescription"]) && !empty($orderItems["ErrorDescription"])): ?>
+		<p>No lines available.</p>
+	<?php else: ?>
+		<table class="gworderlinetable data table" style="width:75%;">
+			<thead>
+				<tr class="orderlinehead" style="font-weight:bold;" align="center">
+					<th>Reorder</th>
+					<th align="left">SKU</th>
+					<th align="left">Description</th>
+					<th align="right">Price</th>
+					<th align="center">Unit</th>
+					<?php
+                 if (strpos($apiurl,'p21cloud') ===false  ){ ?>
+					<th align="right">Qty Requested</th> 
+					<?php } ?>
+					<th align="right">Qty Shipped</th>
+					<th align="right" style="text-align:right;">Net Amt</th>
+				</tr>
+			</thead>
+			<tbody>
+			<?php if (isset($orderItems["company_id"])   ): ?>
+			    <?php
+                         $objectManager = \Magento\Framework\App\ObjectManager::getInstance(); 
+                        $productRepository = $objectManager->get('\Magento\Catalog\Model\ProductRepository');
+                        try {
+                        $productObj = $productRepository->get($orderItems["item_id"]);
+                        $url=$productObj ->getProductUrl();
+                        } catch (\Exception $e) {
+                           $url="#"; 
+                        }
+                        
+                    ?>
+				<tr class=orderline >
+					<td data-th="Reorder" class="qty" align="center">
+					     <?php if ($url!="#") { ?>
+    						<input type=checkbox id="reorder<?php echo  $chkCounter ?>" name="reorder<?php echo  $chkCounter ?>" value="<?php echo  $orderItems["item_id"] ?>">
+    						<input type=hidden id="reorderitem<?php echo  $chkCounter ?>" name="reorderitem<?php echo  $chkCounter ?>"  value="<?php echo  $orderItems["item_id"] ?>">
+						<?php } ?>
+						</td>
+					<td data-th="SKU">
+					    <?php if ($url !="#" )  echo '<a href="'.$url.'" alt="View Item" title="View Item">';  ?>
+					    <?php echo  $orderItems["item_id"] ?>
+					    <?php if ($url !="#" ) echo '</a>'; ?>
+					</a></td>
+					<td data-th="Description"><?php echo  $orderItems["item_desc"] ?></td>
+					<td data-th="Price" class="qty"><?php echo $block->formatMoney( $orderItems["unit_price"]) ?><input type=hidden id="reorderprice<?php echo  $chkCounter ?>" name="reorderprice<?php echo  $chkCounter ?>"  value="<?php echo  $orderItems["unit_price"] ?>"></td>
+					<td data-th="Unit" class="qty"><?php echo  $orderItems["unit_of_measure"] ?><input type=hidden id="reorderunit<?php echo  $chkCounter ?>" name="reorderunit<?php echo  $chkCounter ?>"  value="<?php echo  $orderItems["unit_of_measure"] ?>"></td>
+					<td data-th="Qty Ordered" class="qty"><?php echo  number_format($orderItems["qty_requested"], 2) ?><input type=hidden id="reorderqty<?php echo  $chkCounter ?>" name="reorderqty<?php echo  $chkCounter ?>"  value="<?php echo  $orderItems["qty_requested"] ?>"></td>
+					<td data-th="Qty Shipped" class="qty"><?php echo  number_format($orderItems["qty_shipped"], 2) ?></td>
+					<td data-th="Net Amt" class="qty" style="text-align:right;"><?php echo $block->formatMoney( $orderItems["extended_price"]) ?></td>
+					<?php
+						$total += $orderItems["extended_price"];
+						$chkCounter++;
+					?>
+				</tr>
+			<?php elseif (isset($orderItems["ItemID"])): ?>
+			
+			        <?php
+                         $objectManager = \Magento\Framework\App\ObjectManager::getInstance(); 
+                        $productRepository = $objectManager->get('\Magento\Catalog\Model\ProductRepository');
+                        try {
+                        $productObj = $productRepository->get($orderItems["ItemID"]);
+                        $url=$productObj ->getProductUrl();
+                        } catch (\Exception $e) {
+                           $url="#"; 
+                        }
+                    ?>
+				<tr class=orderline >
+					<td data-th="Reorder" class="qty" align="center">
+					     <?php if ($url!="#") { ?>
+    						<input type=checkbox id="reorder<?php echo  $chkCounter ?>" name="reorder<?php echo  $chkCounter ?>" value="<?php echo  $orderItems["ItemID"] ?>">
+    						<input type=hidden id="reorderitem<?php echo  $chkCounter ?>" name="reorderitem<?php echo  $chkCounter ?>"  value="<?php echo  $orderItems["ItemID"] ?>">
+						<?php } ?>
+						</td>
+					<td data-th="SKU">
+					    <?php if ($url !="#" )  echo '<a href="'.$url.'" alt="View Item" title="View Item">';  ?>
+					    <?php echo  $orderItems["ItemID"] ?>
+					    <?php if ($url !="#" ) echo '</a>'; ?>
+					    </td>
+					<td data-th="Description"><?php echo  $orderItems["Description"] ?></td>
+					<td data-th="Price" class="qty"><?php echo $block->formatMoney( $orderItems["NetPrice"]) ?><input type=hidden id="reorderprice<?php echo  $chkCounter ?>" name="reorderprice<?php echo  $chkCounter ?>"  value="<?php echo  $orderItems["NetPrice"] ?>"></td>
+					<td data-th="Unit" class="qty"><?php echo  $orderItems["UnitSize"] ?><input type=hidden id="reorderunit<?php echo  $chkCounter ?>" name="reorderunit<?php echo  $chkCounter ?>"  value="<?php echo  $orderItems["UnitSize"] ?>"></td>
+					<td data-th="Qty Ordered" class="qty"><?php echo  number_format($orderItems["QuantityShipped"], 2) ?><input type=hidden id="reorderqty<?php echo  $chkCounter ?>" name="reorderqty<?php echo  $chkCounter ?>"  value="<?php echo  $orderItems["QuantityShipped"] ?>"></td>
+				
+					<td data-th="Net Amt" class="qty" style="text-align:right;"><?php echo $block->formatMoney( $orderItems["NetPrice"] * $orderItems["QuantityShipped"]) ?></td>
+					<?php
+						$total += $orderItems["NetPrice"] * $orderItems["QuantityShipped"];
+						$chkCounter++;
+					?>
+				</tr>
+			<?php elseif (isset($orderItems["SalesCustomerInvoiceLinesSelectResponseContainerItems"])): ?>
+				<?php if (isset($orderItems["SalesCustomerInvoiceLinesSelectResponseContainerItems"][0]["item_id"])): ?>
+    				<?php foreach ($orderItems["SalesCustomerInvoiceLinesSelectResponseContainerItems"] as $itemLine): ?>
+        				 <?php
+            				
+                             $objectManager = \Magento\Framework\App\ObjectManager::getInstance(); 
+                            $productRepository = $objectManager->get('\Magento\Catalog\Model\ProductRepository');
+                            if  ($itemLine["invoice_line_uid_parent"]!="0" ){
+            			        continue;
+            			    }
+                            if (!isset($alreadyDone))  $alreadyDone='|'; 
+                               if (str_contains($alreadyDone, '|' . $itemLine["line_no"] . '|')) {
+                                     continue;
+                                }
+                                
+                                $alreadyDone .= $itemLine["line_no"] . '|';
+                                //$this->p21->gwlog($alreadyDone);
+                        
+                            try {
+                            $productObj = $productRepository->get($itemLine["item_id"]);
+                            $url=$productObj ->getProductUrl();
+                            } catch (\Exception $e) {
+                               $url="#"; 
+                            }
+                            
+                        ?>
+    					<tr class=orderline ><td data-th="Reorder" class="qty"><input type=checkbox id="reorder<?php echo  $chkCounter ?>" name="reorder<?php echo  $chkCounter ?>" value="<?php echo  $itemLine["item_id"] ?>"><input type=hidden id="reorderitem<?php echo  $chkCounter ?>" name="reorderitem<?php echo  $chkCounter ?>"  value="<?php echo  $itemLine["item_id"] ?>"></td>
+    						<td data-th="SKU">
+    						    <?php if ($url !="#" )  echo '<a href="'.$url.'" alt="View Item" title="View Item">';  ?>
+        					    <?php echo  $itemLine["item_id"] ?>
+        					    <?php if ($url !="#" ) echo '</a>'; ?>
+    						</td>
+    						<td data-th="Description"><?php echo  $itemLine["item_desc"] ?></td>
+    						<td data-th="Price" class="qty"><?php echo $block->formatMoney( $itemLine["unit_price"]) ?><input type=hidden id="reorderprice<?php echo  $chkCounter ?>" name="reorderprice<?php echo  $chkCounter ?>"  value="<?php echo  $itemLine["unit_price"] ?>"></td>
+    						<td data-th="Unit" class="qty"><?php echo  $itemLine["unit_of_measure"] ?><input type=hidden id="reorderunit<?php echo  $chkCounter ?>" name="reorderunit<?php echo  $chkCounter ?>"  value="<?php echo  $itemLine["unit_of_measure"] ?>"></td>
+    						<td data-th="Qty Ordered" class="qty"><?php echo  number_format($itemLine["qty_requested"], 2) ?><input type=hidden id="reorderqty<?php echo  $chkCounter ?>" name="reorderqty<?php echo  $chkCounter ?>"  value="<?php echo  $itemLine["qty_requested"] ?>"></td>
+    						<td data-th="Qty Shipped" class="qty"><?php echo  number_format($itemLine["qty_shipped"], 2) ?></td>
+    						<td data-th="Net Amt" class="qty" style="text-align:right;"><?php echo $block->formatMoney( $itemLine["extended_price"]) ?></td>
+    					</tr>
+    					<?php
+    						$total = ($itemLine["extended_price"]) + $total;
+    						$chkCounter += 1;
+    					?>
+    				<?php endforeach; ?>
+    			<?php else: ?>
+    				<?php foreach ($orderItems["SalesCustomerInvoiceLinesSelectResponseContainerItems"] as $itemLine): ?>
+        		        <?php
+                             $objectManager = \Magento\Framework\App\ObjectManager::getInstance(); 
+                            $productRepository = $objectManager->get('\Magento\Catalog\Model\ProductRepository');
+                            try {
+                            $productObj = $productRepository->get($itemLine["ItemID"]);
+                            $url=$productObj ->getProductUrl();
+                            } catch (\Exception $e) {
+                               $url="#"; 
+                            }
+                        ?>
+    					<tr class=orderline ><td data-th="Reorder" class="qty"><input type=checkbox id="reorder<?php echo  $chkCounter ?>" name="reorder<?php echo  $chkCounter ?>" value="<?php echo  $itemLine["ItemID"] ?>"><input type=hidden id="reorderitem<?php echo  $chkCounter ?>" name="reorderitem<?php echo  $chkCounter ?>"  value="<?php echo  $itemLine["ItemID"] ?>"></td>
+    						<td data-th="SKU">
+    						    <?php if ($url !="#" )  echo '<a href="'.$url.'" alt="View Item" title="View Item">';  ?>
+        					    <?php echo  $orderItems["ItemID"] ?>
+        					    <?php if ($url !="#" ) echo '</a>'; ?>
+    						</td>
+    						<td data-th="Description"><?php echo  $itemLine["Description"] ?></td>
+    						<td data-th="Price" class="qty"><?php echo $block->formatMoney( $itemLine["NetPrice"]) ?><input type=hidden id="reorderprice<?php echo  $chkCounter ?>" name="reorderprice<?php echo  $chkCounter ?>"  value="<?php echo  $itemLine["NetPrice"] ?>"></td>
+    						<td data-th="Unit" class="qty"><?php echo  $itemLine["UnitSize"] ?><input type=hidden id="reorderunit<?php echo  $chkCounter ?>" name="reorderunit<?php echo  $chkCounter ?>"  value="<?php echo  $itemLine["UnitSize"] ?>"></td>
+    						<td data-th="Qty Ordered" class="qty"><?php echo  number_format($itemLine["QuantityShipped"], 2) ?><input type=hidden id="reorderqty<?php echo  $chkCounter ?>" name="reorderqty<?php echo  $chkCounter ?>"  value="<?php echo  $itemLine["QuantityShipped"] ?>"></td>
+    					
+    						<td data-th="Net Amt" class="qty" style="text-align:right;"><?php echo $block->formatMoney( $itemLine["NetPrice"] * $itemLine["QuantityShipped"]) ?></td>
+    					</tr>
+    					<?php
+    						$total = ($itemLine["NetPrice"] * $itemLine["QuantityShipped"]) + $total;
+    						$chkCounter += 1;
+    					?>
+    				
+    				<?php endforeach; ?>
+    			<?php endif; ?>
+			<?php endif; ?>
+			
+				<tr>
+					<td>
+						<input type="hidden" id="reorderitems" name="reorderitems" value="yes">
+						<input type="hidden" id="totalitems" name="totalitems" value='<?php echo ($chkCounter - 1) ?>'>
+						<button type="submit" class="action subscribe primary">Reorder</button></td>
+					<td></td>
+					<td colspan=5 align="right"><strong>Subotal:</td>
+					<td valign="middle" align="right"><?php echo $block->formatMoney((floatval($total))) ?></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td colspan=6 align="right"><strong>Amount Paid:</td>
+					<td valign="middle" align="right"><?php echo $block->formatMoney((floatval($invoiceHead["amount_paid"]))) ?></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td colspan=6 align="right"><strong>Terms Taken:</td>
+					<td valign="middle" align="right"><?php echo $block->formatMoney((    floatval(isset($invoiceHead["terms_taken"]) ? $invoiceHead["terms_taken"] : $invoiceHead["TermsAmount"] ))) ?></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td colspan=6 align="right"><strong>Amount Due:</td>
+					<td valign="middle" align="right"><?php echo $block->formatMoney((floatval($total-$invoiceHead["amount_paid"]-$invoiceHead["terms_taken"]))) ?></td>
+				</tr>
+				 <?php 
+    				
+    				 if (!empty($processor) && $processor <> "none"): 			 ?>
+                    <tr>
+                        <td colspan="8" align="right">
+						<input type="hidden" name="payinvoice[<?php echo $invoice?>]" value="<?php echo $invoice ?>" /><input type="hidden" name="invoiceamount[<?php echo $invoice?>]" value="<?php echo (floatval($total-$invoiceHead["amount_paid"]-$invoiceHead["terms_taken"]))?>" />
+						<button class="action primary" title="Pay" value="Pay" type="submit">Pay <?php echo $processor ?></button></td>
+                    </tr>
+                <?php endif; ?>
+			</tbody>
+		</table>
+	<?php endif; ?>
+</form>

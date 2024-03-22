@@ -1,0 +1,10 @@
+.gworderbodytable td{
+    padding: 6px 8px;
+    font-size: 14px;
+    
+}
+
+.block-dashboard-orders {
+        display: none!important;
+    
+}

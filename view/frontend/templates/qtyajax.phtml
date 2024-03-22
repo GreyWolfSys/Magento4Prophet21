@@ -1,0 +1,27 @@
+<?php
+$_productSku = $block->getData('sku');
+$_product = $block->getProduct($_productSku);
+error_log("checking qty");
+?>
+<?php if ($_product && $_product->getTypeId() != 'simple'): ?>
+    <div class="product attribute sku gtooltip"><strong>Select options to see quantity available</strong></div>
+<?php else: ?>
+     <?php $qtyAvailable = $this->getQtyInfo($_product); ?>
+
+    <?php if (isset($qtyAvailable['qty'])): ?>
+    <div class="product attribute sku gtooltip">
+        <strong class="value">Qty Available: </strong>
+        <div class="value" itemprop="qty"><?php echo $qtyAvailable['qty'] ?></div>
+        <?php if (!empty($qtyAvailable['more']) ): ?>
+            <div style="clear:both;" class="product attribute sku gtooltip">
+                <a href="#" class=gtooltip>See More</a>
+            </div>
+            <span>
+                <?php foreach($qtyAvailable['more'] as $_qty): ?>
+                <strong><?php echo $_qty['whName'] ?>:</strong> <?php echo $_qty['qty'] ?><br>
+                <?php endforeach; ?>
+            </span>
+        <?php endif; ?>
+    </div>
+    <?php endif; ?>
+<?php endif; ?>

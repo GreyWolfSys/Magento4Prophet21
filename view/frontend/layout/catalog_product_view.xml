@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="../../../../../../../lib/internal/Magento/Framework/View/Layout/etc/page_configuration.xsd">
+	<head>
+        <css src="Altitude_P21::GreyWolfAvailable.css"/>
+    </head>
+	<body>
+		<referenceContainer name="product.info.stock.sku">
+			<block
+			    template="product/content.phtml"
+			    class="Altitude\P21\Block\MainProduct"
+			    name="altitude_P21"/>
+	    </referenceContainer>
+		<referenceContainer name="product.info.price">
+			<block
+			    template="price.phtml"
+			    class="Altitude\P21\Block\MainProduct"
+			    name="altitude_P21_price"
+				before="product.price.final" cacheable="false" />
+	    </referenceContainer>
+	</body>
+</page>

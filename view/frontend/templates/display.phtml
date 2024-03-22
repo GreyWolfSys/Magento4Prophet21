@@ -1,0 +1,16 @@
+<?php // Add some code
+//echo "this worked.";
+
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$customerSession = $objectManager->get('Magento\Customer\Model\Session');
+
+if($customerSession->isLoggedIn()) {
+	 $customer=$customerSession->getCustomer();
+
+	echo ($this->DisplayOrders($customer['p21_custno']));
+}
+else{
+	echo "Not logged in";
+}
+
+ ?>

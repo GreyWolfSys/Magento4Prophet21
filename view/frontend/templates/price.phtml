@@ -1,0 +1,31 @@
+<?php
+$_product = $block->getCurrentProduct();
+
+?>
+<?php if ($_product->getTypeId() != 'simple'): ?>
+    <!-- <div class="product attribute sku gtooltip"><strong>Select options to see quantity available</strong></div> -->
+<?php else: ?>
+    <?php $tierPrice = $block->getPriceInfo($_product); ?>
+
+    <?php if (count($tierPrice)): ?>
+    <div class="price-box-tier-erp">
+        <div class="product attribute price gtooltip">
+            <div style="clear:both;" class="product attribute price gtooltip">
+                <a href="#" class=gtooltip>Qty Pricing</a>
+            </div>
+            <span style='margin-left:0;'>
+                <?php foreach($tierPrice as $_price): ?>
+                    <strong><?php echo $_price['fromTo'] ?>:</strong> <?php echo $_price['price'] ?><br />
+                <?php endforeach; ?>
+            </span>
+        </div>
+    </div>
+    <script>
+        require([
+            'jquery'
+        ], function($){
+            $(".price-box-tier-erp").appendTo($(".product-info-price .price-box.price-final_price"));
+        });
+        </script>
+    <?php endif; ?>
+<?php endif; ?>

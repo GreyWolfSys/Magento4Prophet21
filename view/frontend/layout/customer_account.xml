@@ -1,0 +1,70 @@
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Altitude_P21::GreyWolfOrder.css"/>
+    </head>
+    <body>
+        <referenceBlock name="customer_account_navigation">
+            <block class="Magento\Framework\View\Element\Html\Link\Current" name="altitudep21-customer-orders" after="customer-account-navigation-orders-link">
+                <arguments>
+                    <argument name="path" xsi:type="string">altitudep21/customer/order</argument>
+                    <argument name="label" xsi:type="string">Orders</argument>
+                </arguments>
+            </block>
+            <block class="Magento\Framework\View\Element\Html\Link\Current" name="altitudep21-customer-invoices" after="customer-account-navigation-orders-link">
+                <arguments>
+                    <argument name="path" xsi:type="string">altitudep21/customer/invoice</argument>
+                    <argument name="label" xsi:type="string">Invoices</argument>
+                </arguments>
+
+            </block>
+            <block class="Magento\Framework\View\Element\Html\Link\Current" name="altitudep21-customer-balances" after="customer-account-navigation-orders-link">
+                <arguments>
+                    <argument name="path" xsi:type="string">altitudep21/customer/balances</argument>
+                    <argument name="label" xsi:type="string">Balances</argument>
+                </arguments>
+            </block>
+        </referenceBlock>
+
+        <referenceBlock name="customer-account-navigation-orders-link" remove="true"/>
+        <!-- Store credit -->
+        <referenceBlock name="customer-account-navigation-customer-balance-link" remove="true"/>
+
+        <!-- Downloadable product link -->
+        <referenceBlock name="customer-account-navigation-downloadable-products-link" remove="true"/>
+
+        <!-- Subscription link -->
+        <referenceBlock name="customer-account-navigation-newsletter-subscriptions-link" remove="true"/>
+
+        <!-- Billing agreement link -->
+        <referenceBlock name="customer-account-navigation-billing-agreements-link" remove="true"/>
+
+        <!-- Product review link -->
+        <referenceBlock name="customer-account-navigation-product-reviews-link" remove="true"/>
+
+        <!-- My credit card link -->
+        <referenceBlock name="customer-account-navigation-my-credit-cards-link" remove="true"/>
+
+        <!-- Account edit link -->
+        <referenceBlock name="customer-account-navigation-account-edit-link" remove="true"/>
+
+        <!-- Orders link -->
+        <referenceBlock name="customer-account-navigation-orders-link" remove="true"/>
+
+        <!-- Wish list link -->
+        <referenceBlock name="customer-account-navigation-wish-list-link" remove="true"/>
+
+        <!-- Gift card link -->
+        <referenceBlock name="customer-account-navigation-gift-card-link" remove="true"/>
+
+        <!-- Gift registry -->
+        <referenceBlock name="customer-account-navigation-giftregistry-link" remove="true"/>
+
+        <!-- Reward points -->
+        <referenceBlock name="customer-account-navigation-reward-link" remove="true"/>
+
+        <!-- Order by SKU -->
+        <referenceBlock name="customer-account-navigation-checkout-sku-link" remove="true"/>
+    </body>
+</page>
+
+
