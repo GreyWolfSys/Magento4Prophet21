@@ -1,5 +1,7 @@
 # Magento for Prophet21
 
-![Connection](/doc/img/Connection.png)
+To install the Magento module, please load the code under app\code\Altitude\P21
+
+
 
 
