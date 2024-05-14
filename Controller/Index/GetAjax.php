@@ -45,7 +45,7 @@ class GetAjax extends \Magento\Framework\App\Action\Action
      
         $url = $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
         $bSkip = 'false';
-        $configs = $this->p21->getConfigValue(['cono', 'p21customerid', 'whse']);
+        $configs = $this->p21->getConfigValue(['cono', 'p21customerid', 'whse','localpriceonly']);
         extract($configs);
 
         $this->p21->gwLog('ajax!!c: ' . $controller . ' / u: ' . $url);
@@ -88,12 +88,16 @@ class GetAjax extends \Magento\Framework\App\Action\Action
                 $this->p21->gwLog($e1->getMessage());
         }
         if (!isset($uom)) $uom="EA";
-        if ($apidown == false || $apidown == 'false') {
+        if ($localpriceonly=="Magento") {
+            $newprice = $productObj->getPrice();
+        }
+        elseif ($apidown == false || $apidown == 'false') {
             $this->p21->gwLog('calling config price api');
             try {
-                 
+                $sku= $this->p21->getAltitudeSKU($productObj);
                 $this->p21->gwLog('uom=' . $uom);
-                $gcnl = $this->p21->SalesCustomerPricingSelect($cono, $custno, $prod, $whse, $whse,  '', '', '', '1',$prod,"",$uom);
+                $this->p21->gwLog('sku=' . $sku);
+                $gcnl = $this->p21->SalesCustomerPricingSelect($cono, $custno, $sku, $whse, $whse,  '', '', '', '1',$sku,"",$uom);
             } catch (\Exception $e1) {
                 $this->p21->gwLog($e1->getMessage());
             }
@@ -101,17 +105,26 @@ class GetAjax extends \Magento\Framework\App\Action\Action
                 if (!isset($gcnl) || isset($gcnl['fault'])) {
                     $this->p21->gwLog('error from pricing');
                     $this->p21->getSession()->setApidown(true);
-                    $newprice = 0;
+                    if ($localpriceonly=="Hybrid") {
+                        $newprice = $productObj->getPrice();
+                    } else{
+                        $newprice = 0;
+                    }
                 }
-                  if (strpos($this->p21->getConfigValue('apiurl'),'p21cloud') ===false   ) {
+                $this->p21->gwLog('no error from pricing 1');
+                if (strpos($this->p21->getConfigValue('apiurl'),'p21cloud') ===false   ) {
                     $newprice = $gcnl['unit_price'];
                 } else {
                     $newprice = $gcnl['UnitPrice'];
                 }
+                $this->p21->gwLog('no error from pricing 2');
             } catch (\Exception $e1) {
                 $this->p21->gwLog($e1->getMessage());
             }
         }
+        if ($newprice==0 && $localpriceonly=="Hybrid") {
+            $newprice = $productObj->getPrice();
+        } 
         $result = $this->_resultJsonFactory->create();
         $result->setData($newprice);
 

@@ -21,7 +21,7 @@ require([
     }).done(function(msg) {
 
         basePrice = parseFloat(msg);
-        if (basePrice>0) {
+        if (true){ //(basePrice>0) {
             basePrice = formatter.format(basePrice);
             $('.product-info-price .price-box .price-container .price-wrapper .price').html(basePrice);
             $('.product-info-price .price-box .price-container .price-wrapper:first ').data('priceAmount',basePrice)

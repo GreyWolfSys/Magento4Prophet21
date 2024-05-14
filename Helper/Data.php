@@ -42,7 +42,7 @@ class Data extends AbstractHelper
         $warehouses = $orderWhs = [];
 
         foreach ($items as $item) {
-            $_sku = $item->getSku();
+            $_sku = $this->p21->getAltitudeSKU($item); //$item->getSku();
             $itemAllQty = $this->p21->ItemsWarehouseProductList($cono, $_sku);
 
             if (isset($itemAllQty)) {
@@ -87,7 +87,7 @@ class Data extends AbstractHelper
         $warehouses = [];
 
         foreach ($items as $item) {
-            $_sku = $item->getSku();
+            $_sku = $this->p21->getAltitudeSKU($item); //$item->getSku();
             $itemAllQty = $this->p21->ItemsWarehouseProductList($cono, $_sku);
 
             if (isset($itemAllQty)) {
@@ -188,7 +188,7 @@ class Data extends AbstractHelper
         $hideqtyavai = $this->p21->getConfigValue('defaults/products/hideqtyavai');
         extract($configs);
 
-$this->p21->gwLog("Getting qty");
+        $this->p21->gwLog("Getting qty");
 
         if ($this->p21->botDetector()) {
             return false;
@@ -233,7 +233,7 @@ $this->p21->gwLog("Getting qty");
 
         try {
             $uom="";
-            $prod = $product->getSku();
+            $prod = $this->p21->getAltitudeSKU($product); //$product->getSku();
           //  $this->p21->gwLog("Getting qty for sku " . $prod);
             $prodID = $product->getId();
             if (strpos($apiurl,'p21cloud') ===false  ){
@@ -308,7 +308,7 @@ $this->p21->gwLog("Getting qty");
                         }
                     } //if isset gcallqty
                 } else{ // if isset gcqty
-                    $prod = $product->getSku();
+                    $prod = $this->p21->getAltitudeSKU($product); //$product->getSku();
                     $prodID = $product->getId();
 
                //  $gcQty = $this->p21->SalesCustomerPricingSelect($cono, $p21custno, $prod, $whse, $whse,  '', '','','1',$prod);

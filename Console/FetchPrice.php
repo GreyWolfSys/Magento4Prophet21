@@ -77,7 +77,7 @@ class FetchPrice extends Command
                // // $this->p21->gwLog($product->getData());  
                 // $this->p21->gwLog( $product->getId());
                 // $this->p21->gwLog( $product->getName());
-                $sku= $product->getSku();  
+                $sku= $this->p21->getAltitudeSKU($product); //$product->getSku();  
                 $uom= $product->getData('sales_uom');
                 if (empty($uom)) $uom="ea";
                 $this->p21->gwLog( "sku=" . $sku); 

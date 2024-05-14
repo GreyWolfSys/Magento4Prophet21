@@ -83,7 +83,7 @@ class Product
         $url = $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 
         $id = $subject->getId();
-        $sku = $subject->getSku();
+        $sku = $this->p21->getAltitudeSKU($subject); //$subject->getSku();
 
         if (isset($_SESSION[$url . $sku])) {
             if ($debuggingflag == "true") {
@@ -106,7 +106,7 @@ class Product
 
     public function calculate($price, $sku, $result, $debuggingflag)
     {
-        $sendtoerpinv = $this->p21->getConfigValue(['p21customerid', 'cono', 'whse','slsrepin','defaultterms','operinit','transtype','shipviaty','slsrepout','updateqty']);
+        $sendtoerpinv = $this->p21->getConfigValue(['p21customerid', 'cono', 'whse','slsrepin','defaultterms','operinit','transtype','shipviaty','slsrepout','updateqty','localpriceonly']);
 
         $newprice = $result;
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
@@ -158,6 +158,12 @@ class Product
         if ($controller == "category" || $controller == "cart" || $controller == "section") {
             if ($debuggingflag == "true") {
                 $this->p21->gwLog("..skipping for controller " . $controller);
+            }
+
+            return $result;
+        }elseif ($localpriceonly=="Magento"){
+            if ($debuggingflag == "true") {
+                $this->p21->gwLog("..skipping for local price only  " . $controller);
             }
 
             return $result;
@@ -274,7 +280,9 @@ class Product
             } else {
                 $newprice = $result;
             }
-
+            if ($newprice==0 && $localpriceonly=="Hybrid") {
+                $newprice = $product->getPrice();
+            } 
             return $newprice;
         }
        /******************************************************/

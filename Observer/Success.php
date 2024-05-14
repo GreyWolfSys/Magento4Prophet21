@@ -251,7 +251,7 @@ class Success implements ObserverInterface
         foreach ($items as $item) {
             $lineno = $lineno + 1;
             $name = $item->getName();
-            $type = $item->getSku();
+            $type = $this->p21->getAltitudeSKU($item); //$item->getSku();
             $id = $item->getProductId();
             $qty = $item->getQty();
             $price = $item->getPrice();

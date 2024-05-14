@@ -318,6 +318,31 @@ class InstallData implements InstallDataInterface
                 'visible_on_front' => true
             ]
         );
+        $eavSetup->addAttribute(
+            \Magento\Catalog\Model\Product::ENTITY,
+            'erp_item_id',
+                [
+                'group' => 'General',
+                'type' => 'varchar',
+                'label' => 'ERP Item ID',
+                'input' => 'text',
+                'source' => '',
+                'frontend' => '',
+                'backend' => '',
+                'required' => false,
+                'sort_order' => 51,
+                'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_GLOBAL,
+                'is_used_in_grid' => true,
+                'is_visible_in_grid' => false,
+                'is_filterable_in_grid' => true,
+                'visible' => true,
+                'is_user_defined' => true,
+                'user_defined' => false,
+                'is_html_allowed_on_front' => false,
+                'unique' => false,
+                'visible_on_front' => false
+            ]
+        );
          $setup->endSetup();
 
          $setup->startSetup();

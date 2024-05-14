@@ -67,6 +67,8 @@ class P21 extends \Magento\Framework\Model\AbstractModel
             'whsename' => 'defaults/products/whsename',
             'hidewhselist' => 'defaults/products/hidewhselist',
             'zerostockmsg' => 'defaults/products/zerostockmsg',
+            'altitemidfield' => 'defaults/products/altitemidfield',
+            'localpriceonly' => 'defaults/products/local_price_only',
             
         //    'maxrecall' => 'connectivity/maxrecall/maxrecall',
         //    'maxrecalluid' => 'connectivity/maxrecall/maxrecalluid',
@@ -240,7 +242,7 @@ class P21 extends \Magento\Framework\Model\AbstractModel
     public function createSoapClient($apikey, $apiName)
     {
         $getWsdlMapUrl = $this->getWsdlMapUrl($apikey, $apiName);
-  $this->gwLog($getWsdlMapUrl['wsdlUrl']);
+        $this->gwLog($getWsdlMapUrl['wsdlUrl']);
         try {
             $client = new \SoapClient(
             null,
@@ -346,6 +348,38 @@ class P21 extends \Magento\Framework\Model\AbstractModel
         return $this->customerSession;
     }
 
+    public function getAltitudeSKU($product)
+    {
+
+        $configs = $this->getConfigValue([
+            'altitemidfield'
+        ]);
+        extract($configs);
+       
+
+        
+        if ($this->df_is_admin()) {
+            $sku = $product->getSku();
+        }
+        elseif ($altitemidfield=="1") {
+            $sku = $product->getErpItemId();
+            if (empty($sku))
+            {
+                $sku = $product->getSku();
+                $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                $productRepository = $objectManager->get('\Magento\Catalog\Model\ProductRepository');
+                $product = $productRepository->get($sku);
+                $sku = $product->getData('erp_item_id');
+            }
+            if (empty($sku))
+                $sku = $product->getSku();
+        } else {
+            $sku = $product->getSku();
+        }
+        
+        return $sku;
+      
+    }
 function SalesCreditCardAuthInsert($cono, $orderno, $ordersuf, $amount, $authamt, $bankno, $charmediaauth,$cmm, $commcd, $createdt, $currproc, $mediaauth,$mediacd,$origamt,$origproccd,$preauthno,$processcd,$processno,$respdt,$response,$saleamt,$statustype,$submitdt,$transcd,$transdt,$user1,$user2,$user3,$user4,$user5,$user6,$user7,$user8,$user9){
 	global $apikey,$apiurl;
 	$wsdl_url=$apiurl . "wsdl.aspx?result=wsdl&apikey=" . $apikey . "&api=SalesCreditCardAuthInsert";
@@ -557,7 +591,7 @@ $this->gwLog("cust: " . $company_id);
         $this->LogAPICall($apiname);
         $apikey = $this->getConfigValue('apikey');
         $client = $this->createSoapClient($apikey, $apiname);
-
+        $this->gwLog( "apikey = " . $apikey);
         try {
             $params1 = (object)[];
             $params1->company_id = $company_id;
@@ -589,10 +623,10 @@ $this->gwLog("cust: " . $company_id);
             $rootparams = (object)[];
             $rootparams->SalesCustomerPricingSelectRequestContainer = $params1;
             $result = (object)[];
-           // $this->gwLog( "request = " . json_encode($rootparams));
+            $this->gwLog( "request = " . json_encode($rootparams));
             $result = $client->SalesCustomerPricingSelectRequest($rootparams);
             $response = json_decode(json_encode($result), true);
-
+            $this->gwLog( "response = " . json_encode($result));
             return $response;
         } catch (\Exception $e) {
         }
@@ -1087,37 +1121,7 @@ public function UpdateOrderFieldProcessed($orderid, $DateEntered)
         $this->gwLog("!shipto= " . $shipto);
         $paramsHead = new \ArrayObject();//(object)array();
          if (strpos($this->getConfigValue('apiurl'),'p21cloud') ===false  ){
-         //   $paramsHead[] = new \SoapVar($CompanyId, XSD_STRING, null, null, 'company_id');
-         //   $paramsHead[] = new \SoapVar($CustomerId, XSD_STRING, null, null, 'customer_id');
-         //   $paramsHead[] = new \SoapVar($InvoiceBatchNumber, XSD_STRING, null, null, 'invoice_batch_uid');
-         //   $paramsHead[] = new \SoapVar($Salesreps, XSD_STRING, null, null, 'salesrep_id');
-        //    $paramsHead[] = new \SoapVar($Terms, XSD_STRING, null, null, 'terms');
-        //    $paramsHead[] = new \SoapVar($Taker, XSD_STRING, null, null, 'taker');
-		//	if (!empty($disposition))			$paramsHead[] = new \SoapVar($disposition, XSD_STRING, null, null, 'disposition');
-         //   $paramsHead[] = new \SoapVar($PoNo, XSD_STRING, null, null, 'po_no');
-       //     $paramsHead[] = new \SoapVar($PackingBasis, XSD_STRING, null, null, 'packing_basis');
-        //    $paramsHead[] = new \SoapVar($LocationId, XSD_STRING, null, null, 'location_id');
-            //$paramsHead[] = new \SoapVar($SourceLocationId, XSD_STRING, null, null, 'location_id');
-        //    $paramsHead[] = new \SoapVar($FreightCd, XSD_STRING, null, null, 'freight_cd');
-        //    $paramsHead[] = new \SoapVar($Completed, XSD_STRING, null, null, 'completed');
-        //    $paramsHead[] = new \SoapVar($Approved, XSD_STRING, null, null, 'approved');
-        //    $paramsHead[] = new \SoapVar($Quote, XSD_STRING, null, null, 'projected_order');
-        //    $paramsHead[] = new \SoapVar($DeliveryInstructions, XSD_STRING, null, null, 'delivery_instructions');
-        //    $paramsHead[] = new \SoapVar($ShipToName, XSD_STRING, null, null, 'ship2_name');
-        //    $paramsHead[] = new \SoapVar($ShipToAddress1, XSD_STRING, null, null, 'ship2_add1');
-        //    $paramsHead[] = new \SoapVar($ShipToAddress2, XSD_STRING, null, null, 'ship2_add2');
-        //    $paramsHead[] = new \SoapVar($ShipToCity, XSD_STRING, null, null, 'ship2_city');
-        //    $paramsHead[] = new \SoapVar($OeHdrShip2State, XSD_STRING, null, null, 'ship2_state');
-        //    $paramsHead[] = new \SoapVar($ZipCode, XSD_STRING, null, null, 'ship2_zip');
-        //    $paramsHead[] = new \SoapVar($ShipToCountry, XSD_STRING, null, null, 'ship2_country');
-        //    $paramsHead[] = new \SoapVar($ShipToPhone, XSD_STRING, null, null, 'ship_to_phone');
-		/*	if ($erpAddress == "" && $shipto2erp == "1") {
-                $paramsHead[] = new SoapVar($shipto, XSD_STRING, null, null, 'shipto');
-            } elseif (isset($erpAddress)) {
-                $paramsHead[] = new SoapVar($erpAddress, XSD_STRING, null, null, 'shipto');
-            }*/
-       //     $paramsHead[] = new \SoapVar($JobNo, XSD_STRING, null, null, 'job_name');
-      //      $paramsHead[] = new \SoapVar($apikey, XSD_STRING, null, null, 'APIKey');
+         
             $thisparam= array(
                 'company_id' => $CompanyId, 'customer_id'=>$CustomerId, 'location_id'=>$LocationId,'invoice_batch_uid'=>$InvoiceBatchNumber,'APIKey'=>$apikey,'job_name'=>$JobNo,
                 'salesrep_id' => $Salesreps, 'terms'=>$Terms, 'taker'=>$Taker,'po_no'=>$PoNo,'packing_basis'=>$PackingBasis,'freight_cd'=>$FreightCd,
@@ -1177,7 +1181,7 @@ public function UpdateOrderFieldProcessed($orderid, $DateEntered)
 
             $lineno = $lineno + 1;
             $name = $item->getName();
-            $type = $item->getSku();
+            $type = $this->getAltitudeSKU($item); //$item->getSku();
             $id = $item->getProductId();
               $this->gwLog('Setting salesorderinsert uom');
             $unit = 'ea';

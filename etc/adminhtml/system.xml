@@ -137,6 +137,7 @@
             <group id="misc" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Misc</label>
                 <field id="debugenabled" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Debug Enabled?</label>
                     <comment>This controls how much is logged by Altitude functions.</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
@@ -151,8 +152,8 @@
                 </field>
                 <field id="onlycheckproduct" translate="label" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Only check pricing at product level?</label>
-                    <comment></comment>
                     <comment>This skips the pricing API call on category, home, and search pages, which improves performance.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
             <group id="orderemail" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
@@ -202,6 +203,16 @@
                     <label>Zero Stock Message</label>
                     <comment>If there is no quantity available, display this message. Leave blank to show not qty available.</comment>
                 </field>
+                <field id="altitemidfield" translate="label" type="select" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Alternate field for Item ID?</label>
+                    <comment>If "yes", the P21 Item ID will be stored in a field named "P21 Item ID" instead of the SKU. Both fields will be required. The Item ID will be used for pricing and quantity updates.</comment>
+                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="local_price_only" type="select" sortOrder="10" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+					<label>Dynamic Pricing Type</label>
+                    <comment>Selecting "P21" will attempt to get the live and dynamic price from P21. "Magento" means using just the price stored in Magento. "Hybrid" uses the Magento price if the P21 price is not available.</comment>
+                    <source_model>Altitude\P21\Model\Config\Source\Localprice</source_model>
+				</field>
             </group>
         </section>
 

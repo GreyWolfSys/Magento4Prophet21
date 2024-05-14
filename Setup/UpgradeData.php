@@ -95,7 +95,7 @@ class UpgradeData implements UpgradeDataInterface
         $attribute->save();
 
 
-        if (version_compare($context->getVersion(), "1.0.1", "<")) {
+        if (version_compare($context->getVersion(), "8.0.1", "<")) {
 
                 $customerSetup->addAttribute(\Magento\Customer\Model\Customer::ENTITY, 'warehouse', [
                     'type' => 'varchar',
@@ -283,6 +283,30 @@ class UpgradeData implements UpgradeDataInterface
                     'is_html_allowed_on_front' => false,
                     'unique' => false,
                     'visible_on_front' => true
+                ]
+            );
+            $eavSetup->addAttribute(
+                \Magento\Catalog\Model\Product::ENTITY,
+                'erp_item_id',
+                [
+                    'group' => 'General',
+                    'type' => 'varchar',
+                    'label' => 'ERP Item ID',
+                    'input' => 'text',
+                    'source' => '',
+                    'frontend' => '',
+                    'backend' => '',
+                    'required' => false,
+                    'sort_order' => 50,
+                    'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_GLOBAL,
+                    'is_used_in_grid' => true,
+                    'is_visible_in_grid' => false,
+                    'is_filterable_in_grid' => true,
+                    'visible' => true,
+                    'user_defined' => true,
+                    'is_html_allowed_on_front' => false,
+                    'unique' => false,
+                    'visible_on_front' => false
                 ]
             );
                // $attribute->save();

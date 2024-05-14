@@ -17,7 +17,7 @@ class Configurable
         $jsonResult['skus'] = [];
 
         foreach ($subject->getAllowProducts() as $simpleProduct) {
-            $jsonResult['skus'][$simpleProduct->getId()] = $simpleProduct->getSku();
+            $jsonResult['skus'][$simpleProduct->getId()] = $simpleProduct->getSku(); //$this->p21->getAltitudeSKU($simpleProduct); //
         }
 
         $result = json_encode($jsonResult);

@@ -35,7 +35,7 @@ class GetP21Price implements ObserverInterface
        
 //session_unset();
         $moduleName = $this->p21->getModuleName(get_class($this));
-        $configs = $this->p21->getConfigValue(['apikey', 'cono', 'p21customerid', 'whse', 'onlycheckproduct']);
+        $configs = $this->p21->getConfigValue(['apikey', 'cono', 'p21customerid', 'whse', 'onlycheckproduct','localpriceonly']);
         extract($configs);
 
         $url = $this->p21->urlInterface()->getCurrentUrl();
@@ -57,7 +57,7 @@ class GetP21Price implements ObserverInterface
         } else {
             $apidown = false;
         }
-$apidown = false;
+        $apidown = false;
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 
         if ($debuggingflag == "true") {
@@ -153,7 +153,8 @@ $apidown = false;
         foreach ($productsCollection as $product) {
             $price = 0;
             $visibility = "";
-            $prod = $product->getSku();
+            
+            $prod = $this->p21->getAltitudeSKU($product);
             $products[$prod] = $product;
 
             $price = $product->getPrice();
@@ -188,11 +189,17 @@ $apidown = false;
                 $this->p21->gwLog("product sku: $prod");
                 $this->p21->gwLog("product price: $price");
             }
+            if ($localpriceonly=="Magento") {
+                if ($debuggingflag == "true") {
+                    $this->p21->gwLog("skip price for local price only setting");
+                }
+                $bSkip = 'true';
+            }
             if ($controller != "product" && $controller != "block" && strpos($url, 'cart') == false && $controller != "order" && $controller != "order_create") {
                 if ($debuggingflag == "true") {
                     $this->p21->gwLog("controllervar=" . $onlycheckproduct);
                 }
-                if ($onlycheckproduct == "1" || 1==1) {
+                if ($onlycheckproduct == "1" ) {
                     if ($debuggingflag == "true") {
                         $this->p21->gwLog("skip price for non-product page!");
                     }
@@ -304,7 +311,7 @@ $apidown = false;
 
             $this->p21->getSession()->setApidown(false);
             $apidown = $this->p21->getSession()->getApidown();
-$pagestate =  $objectManager->get('Magento\Framework\App\State');
+            $pagestate =  $objectManager->get('Magento\Framework\App\State');
 
             if (strpos($url, 'admin') !== false || strpos($url, '/catalog/product/index/key/') !== false || $admin == true || strpos($url, '/product/index/key') !== false || $pagestate->getAreaCode()=='adminhtml' ) { //
                 if ($debuggingflag == "true") {
@@ -316,7 +323,11 @@ $pagestate =  $objectManager->get('Magento\Framework\App\State');
                 if ($debuggingflag == "true") {
                     $this->p21->gwLog("Skipping P21 price check for apidown or non-product page" . ($apidown));
                 }
-
+                if ($localpriceonly=="Hybrid") {
+                    return $price;
+                } else{
+                    return "";
+                }
                 return "";
             } elseif ($visibility != "" && $visibility != "4" && $singleitem == "false") {
                 if ($debuggingflag == "true") {
@@ -446,9 +457,19 @@ $this->p21->gwLog($result1);
 
                 $this->p21->getSession()->setApidown(true);
                 $apidown = $this->p21->getSession()->getApidown();
+                if ($localpriceonly=="Hybrid") {
+                    $newprice = $price;
+                } else{
+                    $newprice = 0;
+                }
             }
 
             if (isset($gcnl["fault"])) {
+                if ($localpriceonly=="Hybrid") {
+                    $newprice = $price;
+                } else{
+                    $newprice = 0;
+                }
                 if ($debuggingflag == "true") {
                     $this->p21->gwLog("error from pricing: " . $gcnl["fault"]);
                 }
@@ -466,15 +487,12 @@ $this->p21->gwLog($result1);
 
         try {
             $listprice = null;
-//var_dump ($gcnl);
+
             if (isset($gcnl["SalesCustomerPricingListResponseContainerItems"])) {
                 if ($debuggingflag == "true") {
                     $this->p21->gwLog("multi item");
                 }
-/*ob_start();
-var_dump($gcnl);
-$result1 = ob_get_clean();
-$this->p21->gwLog($result1);*/
+
                 foreach ($gcnl["SalesCustomerPricingListResponseContainerItems"] as $_gcnl) {
                     $erpproduct='';
                     if (isset($_gcnl["product"]))  $erpproduct=$_gcnl["product"];
@@ -487,7 +505,7 @@ $this->p21->gwLog($result1);*/
                         foreach ($productsCollection as $product) {
                             $this->p21->gwLog("multi item:: " . $product["product"]);
                             $price = $product->getPrice();
-                            $prod = $product->getSku();
+                            $prod = $this->p21->getAltitudeSKU($product) ;
 
                                 if ($prod==$erpproduct)   {
                                     if ($debuggingflag == "true") {
@@ -508,7 +526,9 @@ $this->p21->gwLog($result1);*/
                                     } else {
                                         $listprice = $_gcnl["BaseUnitPrice"];
                                     }
-
+                                    if ($price==0 && $localpriceonly=="Hybrid") {
+                                        $price = $product->getPrice();
+                                    } 
                                     $product->setPrice($price);
                                     $product->setFinalPrice($price);
                                     $_SESSION[$url . $prod . "price"] = $price;
@@ -543,7 +563,7 @@ $this->p21->gwLog($result1);*/
                 try {
                     $product = $products[$erpproduct];
                     $price = $product->getPrice();
-                    $prod = $product->getSku();
+                    $prod = $this->p21->getAltitudeSKU($product) ;
                     if (strpos($this->p21->getConfigValue('apiurl'),'p21cloud') ===false   ) {
                         $price = $gcnl["unit_price"];
                     } else {
@@ -556,7 +576,9 @@ $this->p21->gwLog($result1);*/
                     }  else {
                         $listprice = $gcnl["BaseUnitPrice"];
                     }
-
+                    if ($price==0 && $localpriceonly=="Hybrid") {
+                        $price = $product->getPrice();
+                    } 
                     $product->setPrice($price);
                     $product->setFinalPrice($price);
                     $_SESSION[$url . $prod . "price"] = $price;

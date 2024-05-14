@@ -43,7 +43,7 @@ class P21Qty extends \Magento\Framework\App\Action\Action
         $result = $this->_resultJsonFactory->create();
         $resultPage = $this->_resultPageFactory->create();
         $sku = $this->getRequest()->getParam('sku');
-
+       
         $block = $resultPage->getLayout()
                 ->createBlock('Altitude\P21\Block\MainProduct')
                 ->setTemplate('Altitude_P21::qtyajax.phtml')
