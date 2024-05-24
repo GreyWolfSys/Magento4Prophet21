@@ -35,9 +35,15 @@ class GetP21Price implements ObserverInterface
        
 //session_unset();
         $moduleName = $this->p21->getModuleName(get_class($this));
-        $configs = $this->p21->getConfigValue(['apikey', 'cono', 'p21customerid', 'whse', 'onlycheckproduct','localpriceonly']);
+        $configs = $this->p21->getConfigValue(['apikey', 'cono', 'p21customerid', 'whse', 'onlycheckproduct','localpriceonly','localpricediscount' ]);
         extract($configs);
-
+        if (empty($localpricediscount) || !isset($localpricediscount) || $localpricediscount==0) {
+            $localpricediscount=1;
+        } else {
+            $localpricediscount=(100-$localpricediscount)/100;
+        }
+        error_log("discount::: " . $localpricediscount);
+        $this->p21->gwLog("discount::: " . $localpricediscount);
         $url = $this->p21->urlInterface()->getCurrentUrl();
         $ip = $this->remoteAddress->getRemoteAddress();
         $displayText = $observer->getEvent()->getName();
@@ -158,42 +164,51 @@ class GetP21Price implements ObserverInterface
             $products[$prod] = $product;
 
             $price = $product->getPrice();
+            error_log("product price1: $price");
+            error_log("product sku: $prod");
 
-        if (strpos($url, 'checkout') === false && strpos($url, 'cart') === false && 1==2) { //cart
-            if (isset($_SESSION[$url . $prod . "price"] ) && 1==2) {
-                if ($debuggingflag == "true") {
-                    $this->p21->gwLog("prod/url already  " . $url . $prod);
-                }
-                $price=$_SESSION[$url . $prod . "price"] ;
-                if (isset($_SESSION[$url . $prod . "listprice"] )) {
-                    $listprice=$_SESSION[$url . $prod . "listprice"];
+            $this->p21->gwLog("product price1: $price");
+            if (strpos($url, 'checkout') === false && strpos($url, 'cart') === false && 1==2) { //cart
+                if (isset($_SESSION[$url . $prod . "price"] ) && 1==2) {
+                    if ($debuggingflag == "true") {
+                        $this->p21->gwLog("prod/url already  " . $url . $prod);
+                    }
+                    $price=$_SESSION[$url . $prod . "price"] ;
+                    if (isset($_SESSION[$url . $prod . "listprice"] )) {
+                        $listprice=$_SESSION[$url . $prod . "listprice"];
+                    } else {
+                        $listprice=0;
+                    }
+                    $product->setPrice($price);
+                    $product->setFinalPrice($price);
+                    if ($listprice > 0 && false) {
+                        $product->setSpecialPrice($listprice);
+                    } else {
+                        $product->setSpecialPrice(null);
+                    }
+                    $skipAPI=true;
+                    continue;
                 } else {
-                    $listprice=0;
-                }
-                $product->setPrice($price);
-                $product->setFinalPrice($price);
-                if ($listprice > 0 && false) {
-                    $product->setSpecialPrice($listprice);
-                } else {
-                    $product->setSpecialPrice(null);
-                }
-                $skipAPI=true;
-                continue;
-            } else {
-                //$_SESSION[$url . $prod] = 1;
+                    //$_SESSION[$url . $prod] = 1;
 
-            }
-       }
+                }
+        }
 
             if ($debuggingflag == "true") {
                 $this->p21->gwLog("product sku: $prod");
                 $this->p21->gwLog("product price: $price");
             }
-            if ($localpriceonly=="Magento") {
-                if ($debuggingflag == "true") {
-                    $this->p21->gwLog("skip price for local price only setting");
-                }
+            if ($localpriceonly=="Magento" ) {
                 $bSkip = 'true';
+                if ($localpricediscount<>1  && strpos($url, '/index/render/key/') == false) { // index/render/key/
+                    
+                    $price = $price * $localpricediscount;
+                }
+                $product->setPrice($price);
+                if ($debuggingflag == "true") {
+                    $this->p21->gwLog("skip price for local price only setting::: " . $price);
+                }
+                //return $price;
             }
             if ($controller != "product" && $controller != "block" && strpos($url, 'cart') == false && $controller != "order" && $controller != "order_create") {
                 if ($debuggingflag == "true") {
@@ -323,12 +338,15 @@ class GetP21Price implements ObserverInterface
                 if ($debuggingflag == "true") {
                     $this->p21->gwLog("Skipping P21 price check for apidown or non-product page" . ($apidown));
                 }
-                if ($localpriceonly=="Hybrid") {
-                    return $price;
+                if ($localpriceonly=="Hybrid" || $localpriceonly=="Magento") {
+                    if ($localpriceonly=="Hybrid" ){
+                        $price = $price*$localpricediscount;
+                    }
+                    continue;
                 } else{
-                    return "";
+                    continue;
                 }
-                return "";
+                continue;
             } elseif ($visibility != "" && $visibility != "4" && $singleitem == "false") {
                 if ($debuggingflag == "true") {
                     $this->p21->gwLog("Skipping P21 price check for invis");
@@ -457,16 +475,18 @@ $this->p21->gwLog($result1);
 
                 $this->p21->getSession()->setApidown(true);
                 $apidown = $this->p21->getSession()->getApidown();
-                if ($localpriceonly=="Hybrid") {
+                if ($localpriceonly=="Hybrid" || $localpriceonly=="Magento") {
                     $newprice = $price;
+                    $newprice = $newprice*$localpricediscount;
                 } else{
                     $newprice = 0;
                 }
             }
 
             if (isset($gcnl["fault"])) {
-                if ($localpriceonly=="Hybrid") {
+                if ($localpriceonly=="Hybrid" || $localpriceonly=="Magento") {
                     $newprice = $price;
+                    $newprice = $newprice*$localpricediscount;
                 } else{
                     $newprice = 0;
                 }
@@ -526,8 +546,9 @@ $this->p21->gwLog($result1);
                                     } else {
                                         $listprice = $_gcnl["BaseUnitPrice"];
                                     }
-                                    if ($price==0 && $localpriceonly=="Hybrid") {
+                                    if ($price==0 && $localpriceonly=="Hybrid" || $localpriceonly=="Magento") {
                                         $price = $product->getPrice();
+                                        $price = $price*$localpricediscount;
                                     } 
                                     $product->setPrice($price);
                                     $product->setFinalPrice($price);
@@ -576,8 +597,9 @@ $this->p21->gwLog($result1);
                     }  else {
                         $listprice = $gcnl["BaseUnitPrice"];
                     }
-                    if ($price==0 && $localpriceonly=="Hybrid") {
+                    if ($price==0 && $localpriceonly=="Hybrid" || $localpriceonly=="Magento") {
                         $price = $product->getPrice();
+                        $price = $price*$localpricediscount;
                     } 
                     $product->setPrice($price);
                     $product->setFinalPrice($price);
@@ -603,6 +625,12 @@ $this->p21->gwLog($result1);
             } else {
                 if ($debuggingflag == "true") {
                     $this->p21->gwLog("not set!!");
+                }
+                if ($price==0 && $localpriceonly=="Hybrid" || $localpriceonly=="Magento") {
+                    $product->setPrice($price);
+                    //$product->setFinalPrice($price);
+                    
+                    $this->p21->gwLog("price=$price");
                 }
             }
         } catch (Exception $e) {

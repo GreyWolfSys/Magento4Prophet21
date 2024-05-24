@@ -33,7 +33,9 @@
     <event name="catalog_product_collection_load_after">
         <observer name="belvg_verpage_controller_front_send_response_before6" instance="Altitude\P21\Model\GetP21Price"  />
     </event>
-
+    <event name="catalog_product_load_after">
+        <observer name="altitude_catalog_product_load_after" instance="Altitude\P21\Model\GetLocalPriceDiscount"  />
+    </event>
 
     <event name="customer_login">
         <observer name="customer_login_observer" instance="Altitude\P21\Observer\CustomerLogin" />

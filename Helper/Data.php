@@ -375,8 +375,9 @@ class Data extends AbstractHelper
           $qtyAvailable['qty'] =(round($totalQty,2));
           if ($zerostockmsg !='' && $totalQty <=0) {
               unset($qtyAvailable['more'] );
-              $qtyAvailable['qty'] = $zerostockmsg;
+              $qtyAvailable['qty'] = $zerostockmsg . "";
           }
+
         } catch (\Exception $e) {
             $this->p21->gwLog('Error ' . $e->getMessage());
         }

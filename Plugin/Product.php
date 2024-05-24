@@ -106,8 +106,13 @@ class Product
 
     public function calculate($price, $sku, $result, $debuggingflag)
     {
-        $sendtoerpinv = $this->p21->getConfigValue(['p21customerid', 'cono', 'whse','slsrepin','defaultterms','operinit','transtype','shipviaty','slsrepout','updateqty','localpriceonly']);
-
+        $configs = $this->p21->getConfigValue(['p21customerid', 'cono', 'whse','slsrepin','defaultterms','operinit','transtype','shipviaty','slsrepout','updateqty','localpriceonly','localpricediscount' ]);
+        extract($configs);
+        if (empty($localpricediscount) || !isset($localpricediscount) || $localpricediscount==0) {
+            $localpricediscount=1;
+        } else {
+            $localpricediscount=(100-$localpricediscount)/100;
+        }
         $newprice = $result;
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         if ($debuggingflag == "true") {
@@ -282,6 +287,7 @@ class Product
             }
             if ($newprice==0 && $localpriceonly=="Hybrid") {
                 $newprice = $product->getPrice();
+                $newprice = $newprice*$localpricediscount;
             } 
             return $newprice;
         }

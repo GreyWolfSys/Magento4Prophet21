@@ -213,6 +213,11 @@
                     <comment>Selecting "P21" will attempt to get the live and dynamic price from P21. "Magento" means using just the price stored in Magento. "Hybrid" uses the Magento price if the P21 price is not available.</comment>
                     <source_model>Altitude\P21\Model\Config\Source\Localprice</source_model>
 				</field>
+                <field id="local_price_discount" type="text" sortOrder="11" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+					<label>Apply discount to Magento Price</label>
+                    <comment>Will apply this discount as a percentage to prices taken from Magento.</comment>
+                    <validate>integer</validate>
+				</field>
             </group>
         </section>
 

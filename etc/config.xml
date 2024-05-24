@@ -29,6 +29,7 @@
                 <zerostockmsg>Available to Order</zerostockmsg>
                 <altitemidfield>0</altitemidfield>
                 <local_price_only>P21</local_price_only>
+                <local_price_discount>0</local_price_discount>
             </products>
             <orderemail>
                 <shipping_text></shipping_text>

@@ -69,6 +69,7 @@ class P21 extends \Magento\Framework\Model\AbstractModel
             'zerostockmsg' => 'defaults/products/zerostockmsg',
             'altitemidfield' => 'defaults/products/altitemidfield',
             'localpriceonly' => 'defaults/products/local_price_only',
+            'localpricediscount' => 'defaults/products/local_price_discount',
             
         //    'maxrecall' => 'connectivity/maxrecall/maxrecall',
         //    'maxrecalluid' => 'connectivity/maxrecall/maxrecalluid',

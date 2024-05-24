@@ -45,9 +45,15 @@ class GetAjax extends \Magento\Framework\App\Action\Action
      
         $url = $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
         $bSkip = 'false';
-        $configs = $this->p21->getConfigValue(['cono', 'p21customerid', 'whse','localpriceonly']);
+        $configs = $this->p21->getConfigValue(['cono', 'p21customerid', 'whse','localpriceonly','localpricediscount' ]);
         extract($configs);
-
+    
+        if (empty($localpricediscount) || !isset($localpricediscount) || $localpricediscount==0) {
+            $localpricediscount=1;
+        } else {
+            $localpricediscount = (100-$localpricediscount)/100;
+        }
+      
         $this->p21->gwLog('ajax!!c: ' . $controller . ' / u: ' . $url);
 
         if ($this->p21->getSession()->getApidown()) {
@@ -90,6 +96,7 @@ class GetAjax extends \Magento\Framework\App\Action\Action
         if (!isset($uom)) $uom="EA";
         if ($localpriceonly=="Magento") {
             $newprice = $productObj->getPrice();
+            
         }
         elseif ($apidown == false || $apidown == 'false') {
             $this->p21->gwLog('calling config price api');
@@ -107,6 +114,7 @@ class GetAjax extends \Magento\Framework\App\Action\Action
                     $this->p21->getSession()->setApidown(true);
                     if ($localpriceonly=="Hybrid") {
                         $newprice = $productObj->getPrice();
+                        $newprice = $newprice*$localpricediscount;
                     } else{
                         $newprice = 0;
                     }
@@ -124,6 +132,7 @@ class GetAjax extends \Magento\Framework\App\Action\Action
         }
         if ($newprice==0 && $localpriceonly=="Hybrid") {
             $newprice = $productObj->getPrice();
+            $newprice = $newprice*$localpricediscount;
         } 
         $result = $this->_resultJsonFactory->create();
         $result->setData($newprice);
